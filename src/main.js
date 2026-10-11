@@ -35,7 +35,6 @@ const input = document.querySelector('#chat-input');
 const state = document.querySelector('#chat-state');
 const status = document.querySelector('#chat-status');
 const send = document.querySelector('#send-button');
-const dialog = document.querySelector('#lead-dialog');
 const history = [];
 let busy = false;
 let greeted = false;
@@ -136,7 +135,7 @@ async function talk(text) {
     if (data.demo) status.textContent = 'Демонстрационный режим: подключите ключ ИИ в Vercel для свободного общения. Обращения пока не отправляются.';
     if (data.leadReady && !data.demo && typeof data.summary === 'string') {
       pendingSummary = data.summary; setTimeout(() => action('wink'), 1400);
-      const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Проверить и передать владельцу ↗'; button.addEventListener('click', openLead); element.append(button); messages.scrollTop = messages.scrollHeight;
+      const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Передать владельцу в Telegram ↗'; button.addEventListener('click', () => sendLead(button)); element.append(button); messages.scrollTop = messages.scrollHeight;
     }
   } catch (error) {
     addMessage('assistant', error.name === 'TimeoutError' ? 'Ответ занимает больше времени, чем обычно. Попробуйте отправить вопрос ещё раз.' : (error instanceof TypeError ? 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.' : error.message));
@@ -146,15 +145,13 @@ async function talk(text) {
 document.querySelector('#chat-form').addEventListener('submit', (event) => { event.preventDefault(); talk(input.value); });
 input.addEventListener('keydown', (event) => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); talk(input.value); } });
 document.querySelectorAll('[data-prompt]').forEach((button) => button.addEventListener('click', () => { document.querySelector('#chat').scrollIntoView({ behavior: 'smooth', block: 'center' }); talk(button.dataset.prompt); }));
-function openLead() { dialog.querySelector('[name=summary]').value = pendingSummary; document.querySelector('#lead-status').textContent = ''; dialog.showModal(); }
-document.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
-document.querySelector('#lead-form').addEventListener('submit', async (event) => {
-  event.preventDefault(); const button = event.currentTarget.querySelector('[type=submit]'); const leadStatus = document.querySelector('#lead-status'); button.disabled = true; leadStatus.textContent = 'Отправляем…';
-  const fields = new FormData(event.currentTarget);
+async function sendLead(button) {
+  if (!pendingSummary) return;
+  button.disabled = true; status.textContent = 'Отправляем владельцу…';
   try {
-    const response = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: fields.get('name'), contact: fields.get('contact'), summary: fields.get('summary'), consent: true }), signal: AbortSignal.timeout(20000) });
+    const response = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ summary: pendingSummary, consent: true }), signal: AbortSignal.timeout(20000) });
     const data = await response.json().catch(() => ({})); if (!response.ok) throw new Error(data.error || 'Не удалось отправить обращение.');
-    dialog.close(); addMessage('assistant', 'Обращение отправлено владельцу в Telegram. Спасибо! Он сможет ответить по указанному контакту.'); action('wink');
-    document.querySelectorAll('.lead-button').forEach((element) => element.remove());
-  } catch (error) { leadStatus.textContent = error.name === 'TimeoutError' ? 'Не удалось подтвердить отправку. Проверьте доставку перед повторной попыткой.' : (error instanceof TypeError ? 'Нет связи с сервером. Обращение не отправлено.' : error.message); } finally { button.disabled = false; }
-});
+    status.textContent = ''; addMessage('assistant', 'Обращение отправлено владельцу в Telegram. Спасибо!'); action('wink');
+    document.querySelectorAll('.lead-button').forEach((element) => element.remove()); pendingSummary = '';
+  } catch (error) { status.textContent = error.name === 'TimeoutError' ? 'Не удалось подтвердить отправку. Проверьте доставку перед повторной попыткой.' : (error instanceof TypeError ? 'Нет связи с сервером. Обращение не отправлено.' : error.message); button.disabled = false; }
+}

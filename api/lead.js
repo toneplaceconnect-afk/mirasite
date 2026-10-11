@@ -4,9 +4,11 @@ export default async function handler(req, res) {
   const origin = req.headers.origin;
   if (origin) { let host = ''; try { host = new URL(origin).host; } catch {} if (host !== req.headers.host) return res.status(403).json({ error: 'Запрещено.' }); }
   let body = req.body; if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = null; } }
-  if (!body || body.consent !== true || [['name', 100], ['contact', 200], ['summary', 4000]].some(([key, max]) => typeof body[key] !== 'string' || !body[key].trim() || body[key].length > max)) return res.status(400).json({ error: 'Заполните имя, контакт и обращение и подтвердите передачу.' });
+  const optional = (key, max) => body && (body[key] === undefined || body[key] === '' || (typeof body[key] === 'string' && body[key].length <= max));
+  if (!body || body.consent !== true || typeof body.summary !== 'string' || !body.summary.trim() || body.summary.length > 4000 || !optional('name', 100) || !optional('contact', 200)) return res.status(400).json({ error: 'Нет текста обращения или не подтверждена передача.' });
   if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) return res.status(503).json({ error: 'Передача в Telegram пока не подключена. Обращение не отправлено.' });
-  const text = `Обращение с сайта Mira\n\nИмя: ${body.name.trim()}\nКонтакт: ${body.contact.trim()}\n\n${body.summary.trim()}\n\nПользователь подтвердил передачу обращения.`;
+  const details = [body.name && `Имя: ${body.name.trim()}`, body.contact && `Контакт: ${body.contact.trim()}`].filter(Boolean).join('\n');
+  const text = `Обращение с сайта Mira\n\n${details ? details + '\n\n' : ''}${body.summary.trim()}\n\nПользователь подтвердил передачу обращения.`;
   try {
     const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: text.slice(0, 4096) }), signal: AbortSignal.timeout(15000) });
     const data = await response.json(); if (!response.ok || !data.ok) throw new Error('Telegram delivery failed');

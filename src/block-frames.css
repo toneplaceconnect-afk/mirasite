@@ -77,3 +77,5 @@ body:not(.site-ready) main>.block:not(.block-hero){visibility:hidden}
   .feature-grid .perch{grid-row:1;grid-column:1;transform:none;--ph:240px}
   .feature-grid .perch~.perch{display:none}
 }
+
+.social-link{display:inline-flex;align-items:center;color:#698a9a;transition:color .2s,transform .2s}.social-link:hover{color:var(--cyan);transform:translateY(-2px)}
