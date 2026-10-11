@@ -1,0 +1,20 @@
+/* Preserve the full-size character; only the feature strip occupies the top. */
+.site-ready .scene-platform,.site-ready .podium-3d-back,.site-ready .podium-3d-front{display:none!important}
+body:not(.site-ready) .hero-dock .robot-scene{top:13vh;height:65vh;width:min(490px,68vw)}
+body:not(.site-ready) .scene-platform{width:min(70%,390px);left:50%;transform:translateX(-50%) rotateX(22deg);bottom:5.5%;height:45px}
+body:not(.site-ready) .scene-platform:before{height:35px;top:-8px}
+.scene-platform:after{display:none}
+.rim-light-track{position:absolute;left:-2px;right:-2px;bottom:-8px;height:28px;pointer-events:none;z-index:4;filter:drop-shadow(0 0 4px #19b8d6)}
+.rim-light-track svg{width:100%;height:100%;overflow:visible}
+.rim-light-track ellipse{fill:none;stroke:#19b8d6;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:7 93;animation:rim-dash 12s linear infinite}
+.rim-light-track .rim-highlight{stroke:#c4ffff;stroke-width:1.5;stroke-dasharray:1 99}
+@keyframes rim-dash{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
+@media(max-width:520px){body:not(.site-ready) .hero-dock .robot-scene{top:14vh;height:58vh;width:min(360px,90vw)}body:not(.site-ready) .scene-platform{width:67%;height:38px;bottom:5.5%}body:not(.site-ready) .scene-platform:before{height:28px}}
+@media(max-height:650px){body:not(.site-ready) .hero-dock .robot-scene{top:16vh;height:53vh;width:min(390px,68vw)}}
+@media(prefers-reduced-motion:reduce){.rim-light-track ellipse{animation:none}}
+/* Feet in the source canvas are at roughly 89% of its height. */
+body:not(.site-ready) .hero-dock .robot-scene{top:13vh;height:70vh;width:min(560px,76vw)}
+body:not(.site-ready) .hero-dock .robot-scene iframe{height:100%;max-width:none;width:auto;aspect-ratio:2 / 3}
+body:not(.site-ready) .scene-platform{bottom:3.8%;height:45px;width:min(72%,410px)}
+@media(max-width:520px){body:not(.site-ready) .hero-dock .robot-scene{top:16vh;height:64vh;width:94vw}body:not(.site-ready) .scene-platform{bottom:3.8%;height:38px;width:74%}}
+@media(max-height:650px){body:not(.site-ready) .hero-dock .robot-scene{top:17vh;height:59vh;width:min(480px,85vw)}body:not(.site-ready) .scene-platform{bottom:3.8%;height:35px}}

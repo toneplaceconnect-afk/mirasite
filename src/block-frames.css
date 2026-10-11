@@ -1,0 +1,79 @@
+/* The five large blocks of the main page (01 знакомство, 02 возможности, 03 как работает, 04 ваш проект, 05 финал):
+   each is a rounded frame holding everything (the page header lives in block 1, the footer in block 5),
+   joined by fibre-optic threads: bottom-right corner of one -> top-left corner of the next. */
+main{position:relative;display:flex;flex-direction:column;gap:clamp(60px,6vw,84px);padding:26px clamp(14px,2.4vw,34px) 44px;flex:1}
+/* Surface: plain background/box-shadow (no filter/transform on the block itself). Layers inside, bottom to top:
+   base colour -> drifting cyan fog (.block-fog) -> technical grid (::after) -> content. */
+main>.block{position:relative;isolation:isolate;border-radius:34px;border:1px solid #fff;background:linear-gradient(150deg,#f8fdfe,#ecf9fc 60%,#e4f6fa);
+  box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px #19b8d61f,inset 0 -26px 40px #bfeaf21f,0 28px 64px #306f8217,0 2px 0 #fff}
+main>.block.section{margin:0}
+/* cyan fog, the same kind of drifting light as on the loading screen */
+.block-fog{position:absolute;inset:0;z-index:-1;overflow:hidden;border-radius:inherit;pointer-events:none}
+.block-fog i{position:absolute;display:block;border-radius:50%;will-change:transform;background:radial-gradient(closest-side,rgba(25,184,214,.68),rgba(25,184,214,.3) 55%,transparent 100%)}
+.block-fog i:nth-child(1){width:78%;aspect-ratio:1.5;left:-14%;top:-16%;animation:fog-a 19s ease-in-out infinite alternate}
+.block-fog i:nth-child(2){width:74%;aspect-ratio:1.4;right:-16%;top:32%;background:radial-gradient(closest-side,rgba(64,213,228,.6),rgba(64,213,228,.24) 55%,transparent 100%);animation:fog-b 23s ease-in-out infinite alternate}
+.block-fog i:nth-child(3){width:66%;aspect-ratio:1.6;left:20%;bottom:-20%;background:radial-gradient(closest-side,rgba(110,224,236,.66),rgba(110,224,236,.24) 55%,transparent 100%);animation:fog-c 27s ease-in-out infinite alternate}
+@keyframes fog-a{to{transform:translate(22%,14%) scale(1.18)}}
+@keyframes fog-b{to{transform:translate(-20%,-12%) scale(1.14)}}
+@keyframes fog-c{to{transform:translate(16%,-16%) scale(1.2)}}
+/* the fine technical grid with depth (12px lines + 1px light offset for relief + 60px lines), same recipe and strength as on the loading screen */
+main>.block:after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background-image:linear-gradient(rgba(31,121,145,.12) .6px,transparent .6px),linear-gradient(90deg,rgba(31,121,145,.12) .6px,transparent .6px),linear-gradient(rgba(255,255,255,.9) .8px,transparent .8px),linear-gradient(90deg,rgba(255,255,255,.9) .8px,transparent .8px),linear-gradient(rgba(30,132,154,.08) .8px,transparent .8px),linear-gradient(90deg,rgba(30,132,154,.08) .8px,transparent .8px);
+  background-size:12px 12px,12px 12px,12px 12px,12px 12px,60px 60px,60px 60px;background-position:0 0,0 0,1px 1px,1px 1px,0 0,0 0;
+  -webkit-mask-image:linear-gradient(#000b,#0006);mask-image:linear-gradient(#000b,#0006)}
+.block-hero{overflow:visible}
+.block-hero .header{border-bottom:1px solid #19b8d62e;background:transparent}
+.block-hero .ticker{border-radius:0 0 33px 33px;border-bottom:0;border-top:1px solid #19b8d62e;background:#e9f8fb99}
+.block-final{overflow:hidden}
+.block-final .final-section{border-top:0;background:none}
+.block-hero .hero{background:none}
+.block-final footer{padding:20px 28px 22px;border-top:1px solid #19b8d62e;font-size:9px;position:relative;z-index:2}
+
+/* fibre-optic threads */
+.fiber{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:5;opacity:0;transition:opacity 1s}
+.fiber path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.f-glow{stroke:#19b8d6;stroke-width:10;opacity:.3;filter:url(#fiber-glow)}
+.f-tube{stroke:url(#fiber-tube);stroke-width:4.2}
+.f-core{stroke:#fff;stroke-width:1.2;opacity:.85}
+.f-pulse{stroke:#c9faff;stroke-width:5;stroke-dasharray:60 1000;stroke-dashoffset:60;filter:url(#fiber-spark);animation:fiber-run 3.6s linear infinite}
+.f-pulse-core{stroke:#fff;stroke-width:2.6;stroke-dasharray:22 1000;stroke-dashoffset:22;animation:fiber-run-core 3.6s linear infinite}
+.f-port{fill:#fff;stroke:#19b8d6;stroke-width:2}
+.f-dot{fill:#19b8d6}
+.f-ring{fill:none;stroke:#19b8d6;stroke-width:1.6;opacity:0;transform-box:fill-box;transform-origin:center}
+.f-ring.start{animation:fiber-ping-start 3.6s ease-out infinite}
+.f-ring.end{animation:fiber-ping-end 3.6s ease-out infinite}
+.fiber .link-2 *{animation-delay:-.9s}.fiber .link-3 *{animation-delay:-1.8s}.fiber .link-4 *{animation-delay:-2.7s}
+@keyframes fiber-run{0%{stroke-dashoffset:60}64%,100%{stroke-dashoffset:-1000}}
+@keyframes fiber-run-core{0%{stroke-dashoffset:22}64%,100%{stroke-dashoffset:-1000}}
+@keyframes fiber-ping-start{0%{opacity:.9;transform:scale(.7)}20%{opacity:0;transform:scale(2.5)}100%{opacity:0}}
+@keyframes fiber-ping-end{0%,60%{opacity:0;transform:scale(.7)}64%{opacity:.95}88%{opacity:0;transform:scale(2.6)}100%{opacity:0}}
+
+@media(max-width:800px){main{padding:18px 12px 36px;gap:56px}main>.block{border-radius:26px}.block-hero .ticker{border-radius:0 0 25px 25px}}
+@media(prefers-reduced-motion:reduce){.block-fog i{animation:none}.f-pulse,.f-pulse-core{animation:none;opacity:0}.f-ring{animation:none}}
+
+/* Main page: plain white behind the blocks; the technical grid lives on the blocks themselves. */
+body.site-ready .ambient-background{background:#fff}
+body.site-ready .ambient-background:after,body.site-ready .cursor-wave,body.site-ready .fluid-light{opacity:0!important;transition:opacity .8s}
+.ambient-background:after{transition:opacity .8s}
+/* Nothing from the main page shows through the loading screen. */
+body:not(.site-ready) main>.block{background:none;border-color:transparent;box-shadow:none}
+body:not(.site-ready) main>.block:after,body:not(.site-ready) .block-fog{display:none}
+body:not(.site-ready) .ticker,body:not(.site-ready) .fiber{opacity:0}
+/* until launch only the first block exists (it holds the docked Mira); everything below stays hidden even if the browser restores a scrolled position */
+body:not(.site-ready) main>.block:not(.block-hero){visibility:hidden}
+.site-ready main>.block{animation:block-in .9s ease backwards}
+.site-ready .fiber.on{opacity:1}
+@keyframes block-in{from{opacity:0}}
+
+/* Robot stops in block 02: one perch above each numbered card; the robot walks down the staircase of cards while scrolling. */
+.feature-grid{grid-template-rows:auto auto}
+.feature-grid .feature{grid-row:2;grid-column:calc(var(--k) + 1)}
+.feature-grid{--ph:clamp(230px,24vw,310px)}
+.feature-grid .perch{grid-row:1;grid-column:calc(var(--k) + 1);justify-self:center;align-self:end;position:relative;height:var(--ph);width:calc(var(--ph) * .667);margin-bottom:-6px;transform:translateY(calc(var(--k) * 45px + 12px));pointer-events:none}
+.feature-grid .perch .robot-scene{width:100%;height:100%}
+@media(max-width:520px){
+  .feature-grid{grid-template-rows:none}
+  .feature-grid .feature{grid-row:auto;grid-column:1}
+  .feature-grid .perch{grid-row:1;grid-column:1;transform:none;--ph:240px}
+  .feature-grid .perch~.perch{display:none}
+}

@@ -1,0 +1,42 @@
+/* Two independent loading capsules and a central glass launch button. */
+.load-readout,#boot-label{display:none!important}
+.boot:before{content:none}
+.orbit{display:none!important}
+.header{background:transparent!important;backdrop-filter:none!important}
+body:not(.site-ready) .header{visibility:hidden}
+.ambient-background:after{mask-image:none}
+@property --rim-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+.scene-platform:after{top:auto;bottom:-9px;left:-1px;right:-1px;height:42px;border-radius:50%;background:conic-gradient(from var(--rim-angle),transparent 0deg,transparent 300deg,#19b8d615 323deg,#19b8d6a6 340deg,#a6f9ffe6 350deg,#19b8d6 355deg,transparent 360deg);mask-image:radial-gradient(ellipse,transparent 78%,#000 84%,#000 93%,transparent 99%);animation:plinth-rim-light 9s linear infinite;filter:drop-shadow(0 0 4px #19b8d6a8);z-index:3}
+@keyframes plinth-rim-light{to{--rim-angle:360deg}}
+.boot{backdrop-filter:none;padding-bottom:6vh;justify-content:flex-end}
+.load-readout{position:absolute;left:50%;top:3vh;transform:translateX(-50%);text-align:center;color:#284e5e}
+.load-readout>.mono{display:block;font-size:8px;letter-spacing:2px;color:#6794a4}
+.load-readout strong{display:block;font-size:40px;line-height:1.25;font-weight:500;letter-spacing:-2px;margin-top:5px}
+.load-readout strong b{font-weight:500;margin:0}
+.load-readout strong>span{font-size:17px;margin-left:5px;color:#1faac4}
+.launch-controls{display:flex;align-items:center;justify-content:center;gap:20px;position:relative;width:calc(100vw - 8vw)}
+.launch-controls .launch-pill{height:96px;width:auto;flex:1;border-radius:60px;border:1px solid #ffffffc7;background:linear-gradient(145deg,#ffffff40,#e5f5f610 45%,#a8ced522);box-shadow:inset 0 2px 3px #ffffffe6,inset 0 -2px 4px #49788340,inset 2px 0 3px #ffffff73,0 8px 20px #25495616;backdrop-filter:blur(10px) saturate(1.2) contrast(1.035);-webkit-backdrop-filter:blur(10px) saturate(1.2) contrast(1.035);isolation:isolate}
+.launch-controls .launch-pill:before{content:'';position:absolute;inset:5px;border:1px solid #ffffff5c;border-bottom-color:#91bbc73d;border-radius:inherit;z-index:3;pointer-events:none}
+.launch-controls .launch-pill:after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,#ffffff73 0%,#ffffff14 18%,transparent 40%,#ffffff1a 82%,#ffffff5c 100%);z-index:2;pointer-events:none}
+.launch-controls .launch-fill{width:100%;border-radius:inherit;background:linear-gradient(180deg,#b9f7fa73,#39c4d959 55%,#199cba66);box-shadow:inset 0 2px 4px #ffffff80,inset 0 -4px 8px #177eab26}
+.launch-controls .launch-fill:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 15%,#ffffff44 40%,transparent 65%);background-size:200% 100%;animation:capsule-shimmer 3.5s linear infinite}
+#launch-button{width:112px;min-width:112px;height:112px;flex-shrink:0;padding:0;display:grid;place-items:center;border-radius:50%;font-size:18px;font-weight:800;letter-spacing:1px;color:#204c5c;border:1px solid #ffffffdb;background:radial-gradient(circle at 28% 20%,#ffffff80,#ffffff12 45%,#87b8c21a 72%,#527c8c4d);backdrop-filter:blur(8px) saturate(1.18) contrast(1.055);-webkit-backdrop-filter:blur(8px) saturate(1.18) contrast(1.055);box-shadow:inset 2px 3px 5px #ffffffeb,inset -3px -5px 8px #426a8040,0 8px 18px #274d611f;isolation:isolate;animation:glass-button-breathe 3s ease-in-out infinite;text-shadow:0 1px 1px #ffffff80}
+#launch-button:before{content:'';position:absolute;inset:7px;border-radius:50%;border:1px solid #ffffffc2;border-right-color:#76b8cba6;pointer-events:none;animation:glass-button-orbit 8s linear infinite}
+#launch-button:after{content:'';position:absolute;top:11px;left:22px;width:55px;height:25px;border-radius:50%;background:linear-gradient(#ffffff9e,#ffffff05);transform:rotate(-25deg);pointer-events:none;z-index:-1}
+#launch-button:not(:disabled):hover{transform:scale(1.06);box-shadow:inset 2px 4px 7px white,inset -3px -5px 8px #426a8040,0 10px 25px #274d6126;background:radial-gradient(circle at 28% 20%,#ffffffa3,#ffffff26 45%,#87b8c226 72%,#527c8c4d)}
+#launch-button:disabled{opacity:.75}
+#boot-label{margin-top:22px}
+body:not(.site-ready) .hero-dock .robot-scene{width:min(490px,68vw);height:65vh;top:13vh;filter:none!important;opacity:1}
+body:not(.site-ready) .hero-dock .robot-scene iframe{filter:none;width:auto;height:100%;aspect-ratio:2 / 3;max-width:100%;left:50%;transform:translateX(-50%)}
+body.mira-awake:not(.site-ready) .hero-dock .robot-scene{filter:none!important}
+@keyframes glass-button-breathe{0%,100%{filter:brightness(1)}50%{filter:brightness(1.09)}}
+@keyframes glass-button-orbit{to{rotate:360deg}}
+@keyframes capsule-shimmer{from{background-position:180% 0}to{background-position:-20% 0}}
+@media(max-height:760px) and (min-width:521px){.boot{padding-bottom:3vh}.launch-controls .launch-pill{height:80px;width:auto}#launch-button{width:96px;min-width:96px;height:96px}.load-readout strong{font-size:32px}body:not(.site-ready) .hero-dock .robot-scene{top:13vh;height:61vh;width:min(420px,60vw)}#boot-label{margin-top:15px}}
+@media(max-width:520px){.boot{padding-bottom:5vh}.load-readout{top:4vh}.load-readout strong{font-size:34px}.launch-controls{width:94vw;gap:10px}.launch-controls .launch-pill{width:auto;height:88px}#launch-button{width:90px;min-width:90px;height:90px;font-size:15px}body:not(.site-ready) .hero-dock .robot-scene{top:14vh;height:58vh;width:min(360px,90vw)}#boot-label{font-size:7px;letter-spacing:1px;margin-top:19px}}
+.launch-controls .launch-pill{background:linear-gradient(180deg,#ffffff99,#ffffff0a 35%,#365c7526 75%,#ffffff70);border-color:#ffffffed;backdrop-filter:blur(4px) contrast(1.15) saturate(1.2);box-shadow:inset 1px 3px 3px #fff,inset -1px -3px 5px #365c7559,0 8px 18px #365c7526}
+#launch-button{background:radial-gradient(circle at 25% 18%,#ffffffe6 0%,#ffffff33 24%,#ffffff05 48%,#4e849c47 76%,#ffffffab 100%);border:1.5px solid #fff;box-shadow:inset 3px 4px 4px #ffffffe6,inset -4px -5px 7px #365c7559,0 8px 18px #365c7540;backdrop-filter:blur(3px) contrast(1.15)}
+@keyframes glass-panel-sweep{0%,15%{background-position:150% 0}85%,100%{background-position:-100% 0}}
+body:not(.site-ready) .hero-dock .robot-scene{top:24vh;height:54vh;width:min(490px,68vw)}
+@media(max-width:520px){body:not(.site-ready) .hero-dock .robot-scene{top:25vh;height:47vh;width:min(330px,90vw)}}
+@media(max-height:650px){body:not(.site-ready) .hero-dock .robot-scene{top:26vh;height:43vh}.launch-controls .launch-pill{height:64px}#launch-button{height:80px;width:80px;min-width:80px}}

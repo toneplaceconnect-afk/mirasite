@@ -1,0 +1,28 @@
+/* Entry scene: manual launch, glass orbital rings and illuminated plinth. */
+body:not(.site-ready){overflow:hidden}
+.boot{z-index:100;background:transparent;backdrop-filter:blur(10px);padding-bottom:9vh;pointer-events:auto;gap:0}
+.boot-logo{font-size:36px;letter-spacing:-3px;margin-bottom:18px;line-height:1.1}
+.boot-logo span{font-size:12px}
+.launch-pill{position:relative;width:min(330px,80vw);height:48px;border:1px solid #ffffff;border-radius:40px;background:#e3f1f4cc;box-shadow:inset 0 2px 6px #387f961c,inset 0 -1px 0 #fff,0 5px 0 #a7d3df38,0 15px 28px #27677917;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.launch-fill{position:absolute;top:0;bottom:0;width:50%;transform:scaleX(var(--load,0));transition:transform .35s cubic-bezier(.22,1,.36,1);background:linear-gradient(90deg,#96e4ec,#19b8d6);box-shadow:inset 0 2px 2px #e7ffff80,inset 0 -3px 5px #178fa650}
+.launch-fill-left{left:0;transform-origin:left}
+.launch-fill-right{right:0;transform-origin:right;background:linear-gradient(270deg,#96e4ec,#19b8d6)}
+#launch-button{position:relative;z-index:2;height:36px;min-width:112px;padding:0 22px;border:1px solid #fff;border-radius:30px;background:linear-gradient(#fff,#ebf7fa);box-shadow:0 3px 7px #347c9633;display:flex;align-items:center;justify-content:center;gap:15px;font-size:12px;font-weight:600;color:#23434f;transition:box-shadow .3s,transform .3s,opacity .3s}
+#launch-button:disabled{cursor:wait;opacity:.65}
+#launch-button:not(:disabled):hover{transform:scale(1.04);box-shadow:0 0 18px #19b8d65c,0 3px 7px #347c9633}
+#launch-button span{color:#169eb9;font-size:18px}
+#boot-label{margin-top:20px;font-size:8px;letter-spacing:1.4px;color:#507f90}
+.boot b{margin-left:10px}
+body:not(.site-ready) .hero-dock .robot-scene{z-index:101;width:min(360px,65vw);height:min(540px,62vh);top:4vh;opacity:1;filter:none;pointer-events:none}
+body:not(.site-ready) .hero-dock .scene-coordinate,body:not(.site-ready) .hero-dock .floating-chip{display:none}
+.scene-platform{height:68px;bottom:2%;left:5%;width:90%;border:1px solid #d6f9ff;background:linear-gradient(180deg,#faffff 0%,#d8edf3 20%,#a9d6e2 55%,#80becf 95%);transform:rotateX(22deg);box-shadow:inset 0 3px 3px white,inset 0 -8px 10px #4b93aa40,0 12px 0 #5e9eb22e,0 24px 25px #31637b22;isolation:isolate}
+.scene-platform:before{content:'';position:absolute;left:-1px;right:-1px;top:-8px;height:50px;border:1px solid #fff;border-radius:50%;background:radial-gradient(ellipse at 40% 35%,#fff 0%,#e9faff 45%,#b7e4ed 80%);box-shadow:inset 0 -2px 3px #85c2d3,0 2px 2px #fff;z-index:1}
+.scene-platform:after{content:'';position:absolute;left:0;right:0;top:-8px;height:50px;border-radius:50%;z-index:2;background:conic-gradient(from 0deg,transparent 0deg,transparent 210deg,#87eef822 250deg,#19b8d6bb 295deg,#d9ffffe6 320deg,transparent 355deg);mask-image:radial-gradient(ellipse,transparent 45%,#000 68%,#000 95%);animation:plinth-wave 3.8s linear infinite;filter:drop-shadow(0 0 5px #19b8d680)}
+.orbit{height:140px;border:5px solid #c8f8ff6b;border-top-color:#ffffffc9;border-bottom-color:#62d0e6a3;border-right-color:#98dce84d;backdrop-filter:blur(2px);box-shadow:inset 0 2px 2px #fff,inset 0 -3px 4px #319cba45,0 4px 2px #83c1d44d,0 9px 18px #28b1cc26;animation:glass-orbit-front 6s ease-in-out infinite;transform:rotate(-22deg);will-change:transform}
+.orbit-back{top:34%;height:155px;border-width:3px;opacity:.8;animation:glass-orbit-back 8s ease-in-out infinite;transform:rotate(24deg)}
+.orbit-front{clip-path:inset(45% -5% -20% -5%)}
+@keyframes plinth-wave{to{rotate:360deg}}
+@keyframes glass-orbit-front{0%,100%{transform:rotate(-25deg) rotateY(12deg) translateY(-5px)}50%{transform:rotate(18deg) rotateY(-18deg) translateY(18px)}}
+@keyframes glass-orbit-back{0%,100%{transform:rotate(24deg) rotateY(-15deg) translateY(12px)}50%{transform:rotate(-20deg) rotateY(22deg) translateY(-15px)}}
+@media(max-width:520px){.boot{padding-bottom:10vh}.launch-pill{height:44px;width:285px}#launch-button{height:34px}.boot-logo{margin-bottom:15px}body:not(.site-ready) .hero-dock .robot-scene{top:6vh;height:57vh;width:min(300px,75vw)}.scene-platform{height:55px}.scene-platform:before,.scene-platform:after{height:40px}.orbit{height:115px}.orbit-back{height:125px}}
+@media(prefers-reduced-motion:reduce){.launch-fill{transition:none}.orbit,.scene-platform:after{animation:none}}

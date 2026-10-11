@@ -1,0 +1,16 @@
+/* Continuous technical grid and a soft, pointer-driven volume of cyan light. */
+body{isolation:isolate;background:transparent}
+.ambient-background{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:#f8fcfd}
+.ambient-background:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(25,184,214,.16) .8px,transparent .8px),linear-gradient(90deg,rgba(25,184,214,.16) .8px,transparent .8px),linear-gradient(rgba(25,184,214,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(25,184,214,.08) 1px,transparent 1px);background-size:48px 48px,48px 48px,240px 240px,240px 240px}
+.cursor-wave{position:absolute;left:0;top:0;width:0;height:0;opacity:0;transition:opacity .9s;will-change:transform}
+.cursor-wave:before,.cursor-wave:after{content:"";position:absolute;width:950px;height:650px;left:-475px;top:-325px;border-radius:48%;background:radial-gradient(ellipse at 42% 48%,rgba(25,184,214,.26),rgba(64,213,228,.15) 35%,rgba(128,229,238,.07) 57%,transparent 73%);filter:blur(28px);animation:wave-breathe 9s ease-in-out infinite alternate}
+.cursor-wave:after{width:650px;height:900px;left:-240px;top:-380px;opacity:.65;animation-delay:-4s;transform:rotate(35deg)}
+.cursor-wave.active{opacity:1}
+.hero{background:none}
+.header{background:#f8fcfdb8;backdrop-filter:blur(12px)}
+.section{background-color:transparent}
+.flow{background:rgba(237,245,248,.76)}
+.final-section{background-image:none;background-color:rgba(248,252,253,.35)}
+.robot-scene iframe{background:transparent!important;color-scheme:light}
+@keyframes wave-breathe{from{rotate:-12deg;scale:.9 1;translate:-30px 15px}to{rotate:16deg;scale:1.12 .95;translate:30px -20px}}
+@media(prefers-reduced-motion:reduce){.cursor-wave{display:none}}

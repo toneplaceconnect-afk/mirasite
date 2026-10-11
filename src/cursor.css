@@ -1,0 +1,17 @@
+.liquid-cursor,.liquid-cursor-ghost{position:fixed;left:0;top:0;pointer-events:none;z-index:2147483646;width:0;height:0;will-change:transform}
+.liquid-cursor{opacity:0;transition:opacity .25s}.liquid-cursor.visible{opacity:1}
+.liquid-cursor:before{content:'';position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;border:1px solid #c5e8eea6;background:radial-gradient(circle at 30% 23%,#ffffff77 0%,#ffffff16 28%,#d6f1f20d 60%,#68aeb326 95%);backdrop-filter:blur(.6px) contrast(1.035) saturate(1.08);box-shadow:inset 1px 2px 3px #ffffffb3,inset -2px -3px 5px #456d7a21,0 3px 8px #26435213;transform:scaleX(var(--stretch,1));transition:width .3s,height .3s,left .3s,top .3s,scale .2s}
+.liquid-cursor:after{content:'';position:absolute;left:-10px;top:-12px;width:13px;height:6px;border-radius:50%;background:linear-gradient(#ffffffb3,#ffffff0d);rotate:-30deg;filter:blur(.3px)}
+.liquid-cursor.interactive:before{width:48px;height:48px;left:-24px;top:-24px;background:radial-gradient(circle at 30% 23%,#ffffff99,#cdeef31a 60%,#68aeb32b)}
+.liquid-cursor.pressed:before{scale:.82}
+.liquid-cursor-ghost:before{content:'';position:absolute;left:-15px;top:-15px;width:30px;height:30px;border-radius:50%;border:1px solid #8caeb14d;background:radial-gradient(circle at 35% 25%,#ffffff80,#6eb5bd21 70%,transparent);transform:scale(var(--ghost-scale));filter:blur(1px)}
+body:has(dialog[open]) .liquid-cursor,body:has(dialog[open]) .liquid-cursor-ghost{visibility:hidden}
+.liquid-trail{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:2147483645}
+.liquid-trail path{fill:none;stroke:rgba(52,135,151,.65);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;filter:blur(1.2px)}
+.liquid-trail{display:none}
+.liquid-trail-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:2147483645;pointer-events:none}
+body:has(dialog[open]) .liquid-trail-canvas{visibility:hidden}
+body:has(dialog[open]) .liquid-trail{visibility:hidden}
+.liquid-cursor:before{width:44px;height:44px;left:-22px;top:-22px;border:1.5px solid #689fa7b3;background:radial-gradient(circle at 28% 22%,#ffffffb3 0%,#ffffff26 32%,#d6f1f20d 60%,#668f9947 95%);box-shadow:inset 2px 3px 4px #ffffffd9,inset -3px -4px 6px #456d7a38,0 4px 10px #26435226;backdrop-filter:blur(1px) contrast(1.09) saturate(1.1)}
+.liquid-cursor-ghost:before{border-color:#729da875;background:radial-gradient(circle at 35% 25%,#ffffff99,#6eb5bd40 70%,transparent)}
+@media(prefers-reduced-motion:reduce){.liquid-cursor-ghost,.liquid-trail{display:none}.liquid-cursor{transition:none}}
