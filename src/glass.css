@@ -6,9 +6,6 @@
 .glass-lights{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .glass-lights i{position:absolute;display:block;border-radius:50%;will-change:transform}
 .glass-lights .gl-blob{width:340px;height:170px;background:radial-gradient(closest-side,#00bfd8c9,#00bfd800);filter:blur(14px);animation:gl-drift 16s ease-in-out infinite alternate}
-.glass-lights .gl-orb{background:radial-gradient(circle at 32% 28%,#fff 0,#8ff0fb 24%,#0fb8d4 62%,#0b7f9b 100%);box-shadow:0 6px 14px #0b7f9b40;animation:gl-float 9s ease-in-out infinite alternate}
-.glass-lights .gl-ring{border:5px solid #12b5d2;background:none;animation:gl-float 11s ease-in-out infinite alternate-reverse}
-.glass-lights .gl-bar{border-radius:6px;height:9px;background:linear-gradient(90deg,#0fb8d4,#7fe6f2);animation:gl-slide 13s ease-in-out infinite alternate}
 @keyframes gl-drift{from{transform:translate(-30px,6px) scale(.95)}to{transform:translate(40px,-8px) scale(1.12)}}
 @keyframes gl-float{from{transform:translate(0,0)}to{transform:translate(26px,12px)}}
 @keyframes gl-slide{from{transform:translateX(-40px)}to{transform:translateX(50px)}}
