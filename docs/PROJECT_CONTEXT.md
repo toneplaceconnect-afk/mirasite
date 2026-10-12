@@ -21,15 +21,35 @@
 
 ## Переменные окружения (Vercel → Settings → Environment Variables)
 
-Уже заданы: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `GROQ_API_KEY`, `NVIDIA_API_KEY`, `GITHUB_TOKEN`.
+Заданы: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `GROQ_API_KEY`, `NVIDIA_API_KEY`, `DAHL_API_KEY`, `GITHUB_TOKEN`.
 На потом: `ADMIN_PASSWORD`, `ADMIN_SECRET`.
-Сейчас `api/chat.js` ждёт `OPENAI_API_KEY`. Без него чат работает в демонстрационном режиме.
+
+Провайдеры ИИ идут по очереди, порядок по умолчанию `groq, nvidia, dahl, openai, custom`.
+Изменить порядок: `AI_PROVIDER_ORDER` (например `dahl,groq`). Провайдер без ключа пропускается.
+Модели: `GROQ_MODEL`, `NVIDIA_MODEL`, `DAHL_MODEL`, `OPENAI_MODEL`, `CUSTOM_MODEL`.
+В каждой можно перечислить несколько моделей через запятую: если первая не ответила, пробуется следующая.
+Для dahl по умолчанию: `MiniMaxAI/MiniMax-M2.7`, `deepseek-ai/DeepSeek-V4-Flash-0731`, `zai-org/GLM-5.3-Flash`
+(адрес `https://inference.dahl.global/v1/chat/completions`).
+Свой OpenAI-совместимый сервис: `CUSTOM_BASE_URL`, `CUSTOM_API_KEY`, `CUSTOM_MODEL`.
+Без единого ключа чат честно работает в демонстрационном режиме.
+
+## Контракт и знания Mira
+
+Лежат в `content/knowledge/*.md` (core, about, faq, limits, handoff) и целиком уходят в ИИ как системная инструкция.
+Править можно без изменения кода. Проверка состояния: открыть `/api/chat` (GET), покажет загруженные модули и число настроенных провайдеров.
+Защита в коде (`lib/mira.js`): суммы, проценты и цены в ответе подменяются заготовкой; обращение владельцу готово только если посетитель сам написал контакт.
+
+## Проверка качества
+
+- `npm test`: автотесты логики чата (без обращения к ИИ).
+- `npm run eval`: прогон сценариев `content/eval/scenarios.json` по настоящим моделям (нужны ключи в окружении).
 
 ## Структура
 
 - `index.html`, `src/*.css`, `src/*.js`: страница и анимации (Vite).
 - `Mira.html`: анимированный персонаж, подключается в iframe, закрыт от индексации.
-- `api/chat.js`: чат. `api/lead.js`: передача обращения в Telegram.
+- `api/chat.js`: обработчик чата, логика в `lib/mira.js`. `api/lead.js`: передача обращения в Telegram.
+- `content/knowledge/`: контракт и знания Mira. `content/eval/`: сценарии проверки. `tests/`, `scripts/`: тесты и проверка.
 - `public/`: шрифты, иконки, `og.png`, `robots.txt`, `sitemap.xml`.
 - `vercel.json`: сборка, заголовки, `X-Robots-Tag: noindex` для `Mira.html`.
 
