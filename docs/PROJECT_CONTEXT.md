@@ -24,7 +24,7 @@
 Заданы: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `GROQ_API_KEY`, `NVIDIA_API_KEY`, `DAHL_API_KEY`, `GITHUB_TOKEN`.
 На потом: `ADMIN_PASSWORD`, `ADMIN_SECRET`.
 
-Провайдеры ИИ идут по очереди, порядок по умолчанию `groq, nvidia, dahl, openai, custom`.
+Провайдеры ИИ идут по очереди, порядок по умолчанию `dahl, groq, nvidia, openai, custom`.
 Изменить порядок: `AI_PROVIDER_ORDER` (например `dahl,groq`). Провайдер без ключа пропускается.
 Модели: `GROQ_MODEL`, `NVIDIA_MODEL`, `DAHL_MODEL`, `OPENAI_MODEL`, `CUSTOM_MODEL`.
 В каждой можно перечислить несколько моделей через запятую: если первая не ответила, пробуется следующая.

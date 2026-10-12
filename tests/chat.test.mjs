@@ -96,6 +96,14 @@ test('parseModelAnswer: <think> с фигурными скобками не ло
   assert.equal(parseModelAnswer('Рассуждение без тега</think>{"reply":"Да"}').reply, 'Да');
 });
 
+test('порядок по умолчанию: dahl первым, потом groq и nvidia', async () => {
+  env({ DAHL_API_KEY: 'd', GROQ_API_KEY: 'g', NVIDIA_API_KEY: 'n' });
+  const hosts = [];
+  globalThis.fetch = async (url) => { hosts.push(new URL(url).host); return { ok: false, status: 500 }; };
+  await call('POST', msg('привет'), '11.0.0.1');
+  assert.deepEqual([...new Set(hosts)], ['inference.dahl.global', 'api.groq.com', 'integrate.api.nvidia.com']);
+});
+
 test('все провайдеры упали: понятная ошибка', async () => {
   env({ GROQ_API_KEY: 'g' });
   globalThis.fetch = async () => { throw new Error('network'); };
