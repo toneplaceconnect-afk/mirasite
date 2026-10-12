@@ -124,7 +124,7 @@ async function talk(text) {
       if (/сайт|проект|подключ/i.test(text)) reply = 'Я могу отвечать посетителям вашего сайта, уточнять, что им нужно, и передавать вам готовые обращения. Сейчас открыт локальный демонстрационный просмотр.';
       if (/цен|стоим|купить|бесплат/i.test(text)) reply = 'Сейчас Mira бесплатна: акция действует до конца 2026 года. Работа ИИ оплачивается у выбранного ИИ-провайдера, есть и бесплатные варианты.';
       return { reply, demo: true, leadReady: false };
-    } }), 1600)) : await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [...history, { role: 'user', content: text }].slice(-16) }), signal: AbortSignal.timeout(45000) });
+    } }), 1600)) : await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [...history, { role: 'user', content: text }].slice(-16) }), signal: AbortSignal.timeout(58000) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || 'Сервис временно недоступен. Попробуйте ещё раз.');
     if (typeof data.reply !== 'string' || !data.reply.trim()) throw new Error('Ответ не получен. Попробуйте ещё раз.');
@@ -135,7 +135,7 @@ async function talk(text) {
     if (data.demo) status.textContent = 'Демонстрационный режим: подключите ключ ИИ в Vercel для свободного общения. Обращения пока не отправляются.';
     if (data.leadReady && !data.demo && typeof data.summary === 'string') {
       pendingSummary = data.summary; setTimeout(() => action('wink'), 1400);
-      const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Передать обращение'; button.addEventListener('click', () => sendLead(button)); element.append(button); messages.scrollTop = messages.scrollHeight;
+      const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Отправить в Compile Point'; button.addEventListener('click', () => sendLead(button)); element.append(button); messages.scrollTop = messages.scrollHeight;
     }
   } catch (error) {
     addMessage('assistant', error.name === 'TimeoutError' ? 'Ответ занимает больше времени, чем обычно. Попробуйте отправить вопрос ещё раз.' : (error instanceof TypeError ? 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.' : error.message));

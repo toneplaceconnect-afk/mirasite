@@ -46,7 +46,7 @@
   "functions": {
     "api/chat.js": {
       "includeFiles": "content/knowledge/**",
-      "maxDuration": 45
+      "maxDuration": 60
     },
     "api/lead.js": {
       "maxDuration": 15

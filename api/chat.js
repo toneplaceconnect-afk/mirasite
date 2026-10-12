@@ -29,14 +29,14 @@ export default async function handler(req, res) {
   try { knowledge = loadKnowledge(); } catch { log({ error: 'knowledge' }); return res.status(500).json({ error: 'Mira временно недоступна. Попробуйте позже.' }); }
   const chat = [{ role: 'system', content: knowledge.prompt }, ...messages.map((m) => ({ role: m.role, content: m.content }))];
 
-  const deadline = Date.now() + 40000; // общий бюджет времени на все попытки
+  const deadline = Date.now() + 55000; // общий бюджет времени на все попытки
   for (const name of order) {
     for (const model of modelsFor(name)) {
       const left = deadline - Date.now();
       if (left < 3000) break;
       const started = Date.now();
       try {
-        const out = await askProvider(name, chat, model, Math.min(14000, left));
+        const out = await askProvider(name, chat, model, Math.min(25000, left));
         const reply = sanitizeReply(out.reply);
         const priceBlocked = reply === PRICE_FALLBACK && out.reply !== PRICE_FALLBACK;
         const wantsLead = out.leadReady === true && !priceBlocked;
