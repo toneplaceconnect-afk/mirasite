@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /Mira.html
+
+Host: https://mira.compilepoint.space
+Sitemap: https://mira.compilepoint.space/sitemap.xml

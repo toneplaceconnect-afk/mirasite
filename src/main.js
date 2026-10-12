@@ -83,7 +83,7 @@ function finishBoot() {
     frame.contentWindow?.postMessage({ type: 'mira-gaze-release' }, location.protocol === 'file:' ? '*' : location.origin);
     action('hi');
     document.querySelector('#launch-button').disabled = false;
-    document.querySelector('#boot-label').textContent = 'НАЖМИТЕ ПУСК';
+    document.querySelector('#boot-label').textContent = 'Нажмите «Пуск»';
   }, initialDelay + blocks.length*stepDuration);
 }
 document.querySelector('#launch-button').addEventListener('click', () => {
@@ -105,7 +105,7 @@ const observer = new IntersectionObserver((entries) => { entries.forEach((entry)
 document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 function addMessage(role, text) {
   const element = document.createElement('div'); element.className = `message ${role}`;
-  if (role === 'assistant') { const label = document.createElement('span'); label.className = 'message-label'; label.textContent = 'MIRA'; element.append(label); }
+  
   element.append(document.createTextNode(text)); messages.append(element); messages.scrollTop = messages.scrollHeight; return element;
 }
 async function talk(text) {
@@ -120,9 +120,9 @@ async function talk(text) {
   try {
     const localPreview = location.protocol === 'file:';
     const response = localPreview ? await new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: async () => {
-      let reply = 'Я Mira — ИИ-агент Compile Point. Отвечаю на вопросы о вашем деле, уточняю потребности посетителей и помогаю подготовить обращение владельцу. Сейчас открыт локальный демонстрационный просмотр.';
-      if (/подключ|сайт|проект/i.test(text)) reply = 'Меня можно подключить к вашему сайту или программе. Знания, характер и правила общения настраиваются под проект. Mira — отдельная платная услуга; условия обсудим после подключения настоящего ИИ-чата.';
-      if (/цен|стоим|купить/i.test(text)) reply = 'Стоимость подключения обсуждается индивидуально и зависит от задачи. Сайты Compile Point разрабатывает бесплатно, а Mira подключается как отдельная платная услуга.';
+      let reply = 'Я Mira, ИИ-помощник для сайта. Отвечаю посетителям, уточняю, что им нужно, и готовлю обращение для владельца. Сейчас открыт локальный демонстрационный просмотр.';
+      if (/сайт|проект|подключ/i.test(text)) reply = 'Я могу отвечать посетителям вашего сайта, уточнять, что им нужно, и передавать вам готовые обращения. Сейчас открыт локальный демонстрационный просмотр.';
+      if (/цен|стоим|купить|бесплат/i.test(text)) reply = 'Сейчас Mira бесплатна: акция действует до конца 2026 года. Работа ИИ оплачивается у выбранного ИИ-провайдера, есть и бесплатные варианты.';
       return { reply, demo: true, leadReady: false };
     } }), 1600)) : await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [...history, { role: 'user', content: text }].slice(-16) }), signal: AbortSignal.timeout(45000) });
     const data = await response.json().catch(() => ({}));
@@ -135,7 +135,7 @@ async function talk(text) {
     if (data.demo) status.textContent = 'Демонстрационный режим: подключите ключ ИИ в Vercel для свободного общения. Обращения пока не отправляются.';
     if (data.leadReady && !data.demo && typeof data.summary === 'string') {
       pendingSummary = data.summary; setTimeout(() => action('wink'), 1400);
-      const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Передать владельцу в Telegram ↗'; button.addEventListener('click', () => sendLead(button)); element.append(button); messages.scrollTop = messages.scrollHeight;
+      const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Передать обращение'; button.addEventListener('click', () => sendLead(button)); element.append(button); messages.scrollTop = messages.scrollHeight;
     }
   } catch (error) {
     addMessage('assistant', error.name === 'TimeoutError' ? 'Ответ занимает больше времени, чем обычно. Попробуйте отправить вопрос ещё раз.' : (error instanceof TypeError ? 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.' : error.message));

@@ -46,7 +46,7 @@
   featureGrid.querySelectorAll('.feature').forEach((card, i) => card.style.setProperty('--k', i));
   const perches = [0, 1, 2].map((i) => { const perch = document.createElement('div'); perch.className = 'perch scene-dock'; perch.style.setProperty('--k', i); featureGrid.append(perch); return perch; });
   const tour = document.createElement('div'); tour.className = 'demo-tour';
-  tour.innerHTML = `<span class="mono">ПОПРОБУЙТЕ СЦЕНАРИЙ</span><button data-tour="Что ты умеешь и как помогаешь посетителям сайта?">01 / Знакомство ↗</button><button data-tour="Мне нужен консультант на сайт услуг. Как настроить твои знания?">02 / Консультация ↗</button><button data-tour="Хочу обсудить подключение Mira к сайту услуг для сбора обращений">03 / Подключение ↗</button>`;
+  tour.innerHTML = `<span class="mono">Попробуйте спросить</span><button data-tour="Что ты умеешь и как помогаешь посетителям сайта?">Что умеет Mira</button><button data-tour="У меня сайт услуг. Чем ты можешь быть полезна?">Помощь сайту услуг</button><button data-tour="Что будет, если ты не знаешь ответа на вопрос посетителя?">Если ответа нет</button>`;
   document.querySelector('.about').append(tour);
   tour.querySelectorAll('button').forEach(button => button.onclick = () => { document.querySelector('#chat').scrollIntoView({behavior:reduced?'instant':'smooth',block:'center'}); talk(button.dataset.tour); });
   let dock = heroDock;
@@ -66,10 +66,14 @@
     if(ir.top<innerHeight*.55&&ir.bottom>innerHeight*.2) target=path.length-1;
     else if(fr.top<innerHeight*.55&&fr.bottom>innerHeight*.2) target=path.length-2;
     else if(perchCount&&ar.bottom>innerHeight*.2&&gr.top<innerHeight*.8){
-      // block 02 is split into thirds of its own scroll distance, so every card gets its turn on any screen height
-      const span=innerHeight*.25+(fr.top-gr.top), q=(innerHeight*.8-gr.top)/span;
-      target=1+Math.min(perchCount-1,Math.max(0,Math.floor(q*3)));
+      // block 02: the robot visits the cards one after another while the row of cards is actually on screen.
+      // progress runs from "row enters the screen" to "row has almost left it", split into equal parts per card.
+      const lead=perches.find((perch)=>perch.offsetParent!==null)||perches[0], pr=lead.getBoundingClientRect();
+      const q=Math.min(.999,Math.max(0,(innerHeight*.8-pr.top)/(innerHeight*.8+pr.height*.6)));
+      target=1+Math.min(perchCount-1,Math.floor(q*perchCount));
     }
+    // past the last block the robot stays where it is, it does not fly back to the top of the page
+    else if(ir.bottom<=innerHeight*.2) target=path.length-1;
     const current=Math.max(0,path.indexOf(dock));
     if(target!==current && document.body.classList.contains('site-ready') && getComputedStyle(scene).display !== 'none') {
       // always move one stop at a time, so the robot visits every block even when the page is scrolled quickly
