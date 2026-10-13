@@ -76,3 +76,17 @@ footer .footer-link:hover{color:var(--cyan)}
 /* точка у логотипа вместо знака ® */
 .logo span{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--cyan);margin:7px 0 0 5px;vertical-align:top;font-size:0;box-shadow:0 0 10px #19b8d65c}
 .chat-note{margin:-4px 18px 12px;font-size:13px;line-height:1.45;color:#5f7680}.chat-note a{color:#0e8fab;text-decoration:underline;text-underline-offset:2px}
+
+/* Заголовки: Jura, жирное начертание, смягчённый цвет */
+:root{--head:#3a5663}
+h1,h2,h3,.logo{font-family:Jura,Nunito,Arial,sans-serif;font-weight:700;color:var(--head);letter-spacing:-.5px}
+h1,h2{letter-spacing:-1.5px}
+.logo{letter-spacing:-1px}
+h1 em,h1 .accent,h2 em,h2 .accent{color:var(--cyan)}
+.nw{white-space:nowrap}
+h1,h2,h3,.logo{-webkit-text-stroke:.5px currentColor;text-wrap:balance}
+h1 em,h2 em{-webkit-text-stroke:.5px var(--cyan)}
+h1{font-size:clamp(34px,3.6vw,56px);line-height:1.12}
+h2{font-size:clamp(30px,3.6vw,52px)}
+@media(max-width:1100px){h1{font-size:38px}h2{font-size:32px}}
+@media(max-width:520px){h1{font-size:33px;letter-spacing:-1px}h2{font-size:28px}}
