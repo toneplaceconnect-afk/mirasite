@@ -118,5 +118,6 @@ try {
   window.MiraPodium={scene,camera,parts,resize,renderer:back,sheenTime,renderAt(seconds){sheenTime.value=seconds;back.render(scene,camera);}};
 } catch(error) {
   console.error('Mira podium could not initialize:',error);
+  document.body.classList.add('podium-failed');
   const note=document.createElement('p');note.className='podium-error';note.textContent='Для 3D-подиума включите аппаратное ускорение WebGL в браузере.';host.append(note);
 }

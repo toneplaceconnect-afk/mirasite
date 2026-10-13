@@ -75,3 +75,4 @@ footer .footer-link:hover{color:var(--cyan)}
 
 /* точка у логотипа вместо знака ® */
 .logo span{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--cyan);margin:7px 0 0 5px;vertical-align:top;font-size:0;box-shadow:0 0 10px #19b8d65c}
+.chat-note{margin:-4px 18px 12px;font-size:13px;line-height:1.45;color:#5f7680}.chat-note a{color:#0e8fab;text-decoration:underline;text-underline-offset:2px}

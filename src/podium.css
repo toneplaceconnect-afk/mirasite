@@ -11,3 +11,4 @@ body.physical-podium:not(.site-ready) .hero-dock .robot-scene{top:17vh;height:73
 @media(max-width:520px){body.physical-podium:not(.site-ready) .hero-dock .robot-scene{top:20vh;height:65vh;width:98vw}}
 @media(max-height:650px){body.physical-podium:not(.site-ready) .hero-dock .robot-scene{top:19vh;height:67vh}}
 .physical-podium .boot{padding-bottom:1.5vh}
+body:not(.physical-podium):not(.podium-failed) .scene-platform,body:not(.physical-podium):not(.podium-failed) .scene-glow{opacity:0!important;visibility:hidden}
