@@ -1,7 +1,7 @@
 /* Читаемость: минимальный размер текста 13px, основной текст 15–17px.
    Файл подключается последним и перекрывает прежние мелкие размеры. */
 body{font-size:16px}
-.mono{font-family:Manrope,Arial,sans-serif;font-size:13px;letter-spacing:.2px}
+.mono{font-family:Nunito,Arial,sans-serif;font-size:13px;letter-spacing:.2px}
 
 /* Шапка и первый экран */
 .header nav{font-size:15px}
