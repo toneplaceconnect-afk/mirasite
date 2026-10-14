@@ -78,13 +78,13 @@
 .lead-trail{position:relative;flex:1;height:0;border-top:2px dashed #19b8d6;opacity:0}
 .lead-trail u{position:absolute;left:0;top:-7px;width:12px;height:12px;border-radius:4px;background:linear-gradient(135deg,#9df4fb,#19b8d6);box-shadow:0 0 8px #19b8d6b3;opacity:0}
 .send-badge{flex:none;display:grid;justify-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.3px;color:#2f7488}
-.send-badge svg{width:34px;height:34px;padding:7px;border-radius:11px;background:linear-gradient(135deg,#35c8de,#1a98b5);box-shadow:0 4px 10px #19b8d659,inset 0 1px 1px #ffffffb3;fill:#fff}
+.send-badge .mw-body{width:34px;height:34px;padding:7px;border-radius:11px;background:linear-gradient(135deg,#35c8de,#1a98b5);box-shadow:0 4px 10px #19b8d659,inset 0 1px 1px #ffffffb3;fill:#fff}
 .s-label{display:grid}.s-label span{grid-area:1/1;white-space:nowrap}
 .s-done{opacity:0;color:#0f8097}
 .intro-visible .lead-card{animation:lead-in .4s var(--d) both}
 .intro-visible .lead-trail{animation:trail-show .3s calc(var(--d) + .7s) both}
 .intro-visible .lead-trail u{animation:packet-fly .5s calc(var(--d) + .95s) both cubic-bezier(.5,0,.4,1)}
-.intro-visible .send-badge svg{animation:badge-pulse .5s calc(var(--d) + 1.4s) both}
+.intro-visible .send-badge .mw-body{animation:badge-pulse .5s calc(var(--d) + 1.4s) both}
 .intro-visible .s-to{animation:fade-out .25s calc(var(--d) + 1.4s) both}
 .intro-visible .s-done{animation:fade-in .3s calc(var(--d) + 1.5s) both}
 @keyframes lead-in{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
@@ -122,12 +122,12 @@ html.glass-refract #launch-button.glass{backdrop-filter:var(--lens) blur(3px) sa
   .intro-block>.mono{font-size:7px;letter-spacing:.4px}
   .scene{left:7px;right:7px;top:23px;bottom:7px;font-size:7.5px;gap:4px}
   .bubble{padding:3px 6px;border-radius:8px}.chk{padding:2px 5px;gap:4px;border-radius:7px}.chk b{width:9px;height:9px;border-width:1px}.chk b:after{left:2px;top:.2px;width:2px;height:4.5px}
-  .lead-card{width:46%;padding:5px}.send-badge svg{width:26px;height:26px;padding:5px}.send-badge{font-size:7px}
+  .lead-card{width:46%;padding:5px}.send-badge .mw-body{width:26px;height:26px;padding:5px}.send-badge{font-size:7px}
   .glass-lights .gl-blob{width:220px;height:120px}
 }
 @media(max-height:650px){.intro-block{height:90px}.scene{top:26px;gap:3px}.bubble{padding:3px 8px}.chk{padding:1px 8px}}
 @media(prefers-reduced-motion:reduce){
   .glass-lights i,#launch-button.glass:not(:disabled),#launch-button.glass:before{animation:none}
-  .intro-visible .bubble,.intro-visible .chk,.intro-visible .lead-card,.intro-visible .lead-trail,.intro-visible .send-badge svg,.intro-visible .s-to,.intro-visible .s-done,.intro-visible .lead-trail u,.intro-visible .chk b,.intro-visible .chk b:after{animation-duration:.01s;animation-delay:0s}
+  .intro-visible .bubble,.intro-visible .chk,.intro-visible .lead-card,.intro-visible .lead-trail,.intro-visible .send-badge .mw-body,.intro-visible .s-to,.intro-visible .s-done,.intro-visible .lead-trail u,.intro-visible .chk b,.intro-visible .chk b:after{animation-duration:.01s;animation-delay:0s}
   .intro-visible .b-typing{animation:none;opacity:0}
 }

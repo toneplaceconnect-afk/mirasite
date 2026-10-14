@@ -151,7 +151,7 @@ async function sendLead(button) {
   try {
     const response = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ summary: pendingSummary, consent: true }), signal: AbortSignal.timeout(20000) });
     const data = await response.json().catch(() => ({})); if (!response.ok) throw new Error(data.error || 'Не удалось отправить обращение.');
-    status.textContent = ''; addMessage('assistant', 'Обращение отправлено владельцу в Telegram. Спасибо!'); action('wink');
+    status.textContent = ''; addMessage('assistant', 'Обращение отправлено владельцу. Спасибо!'); action('wink');
     document.querySelectorAll('.lead-button').forEach((element) => element.remove()); pendingSummary = '';
   } catch (error) { status.textContent = error.name === 'TimeoutError' ? 'Не удалось подтвердить отправку. Проверьте доставку перед повторной попыткой.' : (error instanceof TypeError ? 'Нет связи с сервером. Обращение не отправлено.' : error.message); button.disabled = false; }
 }

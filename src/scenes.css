@@ -51,7 +51,7 @@
 .s3-path path{fill:none;stroke:var(--c);stroke-width:2;stroke-dasharray:5 7;opacity:.55;vector-effect:non-scaling-stroke;animation:s3-dash 1.2s linear infinite}
 @keyframes s3-dash{to{stroke-dashoffset:-24}}
 .s3-dest{position:absolute;right:9%;top:36%;width:76px;height:76px;margin-top:6px;border-radius:50%;background:linear-gradient(140deg,#4fd8ec,#1796b7);box-shadow:0 18px 30px #19a7c64d,inset 0 2px 2px #ffffffb3;display:grid;place-items:center;transform:translateZ(40px);animation:s3-pop 7s infinite}
-.s3-dest svg{width:34px;height:34px;fill:#fff}
+
 .s3-dest i{position:absolute;inset:0;border-radius:50%;border:2px solid var(--c);animation:s3-ring 7s infinite}
 .s3-dest i+i{animation-delay:.25s}
 @keyframes s3-pop{0%,56%{transform:translateZ(40px) scale(1)}62%{transform:translateZ(40px) scale(1.16)}70%,100%{transform:translateZ(40px) scale(1)}}
