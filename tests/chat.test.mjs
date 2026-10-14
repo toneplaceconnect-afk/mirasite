@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseModelAnswer, sanitizeReply, leadAllowed, PRICE_FALLBACK, loadKnowledge } from '../lib/mira.js';
+import { parseModelAnswer, sanitizeReply, leadAllowed, PRICE_FALLBACK, loadKnowledge, askModels } from '../lib/mira.js';
 import handler from '../api/chat.js';
 
 const KEYS = ['DAHL_API_KEY', 'DAHL_MODEL', 'GROQ_MODEL', 'GROQ_API_KEY', 'NVIDIA_API_KEY', 'OPENAI_API_KEY', 'CUSTOM_API_KEY', 'CUSTOM_BASE_URL', 'AI_PROVIDER_ORDER'];
@@ -142,4 +142,22 @@ test('защита: чужой origin, плохое тело, лимит', async
   const bad = await call('POST', { messages: [] }, '7.7.7.7'); assert.equal(bad.code, 400);
   let last; for (let i = 0; i < 42; i++) last = await call('POST', msg('привет'), '8.8.8.8');
   assert.equal(last.code, 429);
+});
+
+test('зависшая модель не блокирует: вторая стартует через hedge и побеждает', async () => {
+  env({ GROQ_API_KEY: 'g' });
+  globalThis.fetch = async (url, opts) => {
+    const m = JSON.parse(opts.body).model;
+    if (m === 'slow') return new Promise((resolve, reject) => { opts.signal.addEventListener('abort', () => reject(new Error('aborted'))); });
+    return ai({ reply: 'Быстрая модель', leadReady: false, summary: '' });
+  };
+  const t = Date.now();
+  const r = await askModels('groq', [{ role: 'user', content: 'x' }], ['slow', 'fast'], { hedgeMs: 30, timeoutMs: 5000 });
+  assert.equal(r.out.reply, 'Быстрая модель'); assert.equal(r.model, 'fast'); assert.ok(Date.now() - t < 1000);
+});
+
+test('если все модели упали, askModels отклоняется с ошибкой', async () => {
+  env({ GROQ_API_KEY: 'g' });
+  globalThis.fetch = async () => ({ ok: false, status: 429, text: async () => 'rate limit' });
+  await assert.rejects(askModels('groq', [{ role: 'user', content: 'x' }], ['a', 'b'], { hedgeMs: 20 }), /HTTP 429/);
 });

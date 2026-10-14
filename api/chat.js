@@ -1,5 +1,5 @@
 // Чат Mira: обработчик запроса. Вся логика лежит в lib/mira.js.
-import { loadKnowledge, providerOrder, modelsFor, limited, askProvider, sanitizeReply, leadAllowed, log, PRICE_FALLBACK } from '../lib/mira.js';
+import { loadKnowledge, providerOrder, modelsFor, limited, askModels, sanitizeReply, leadAllowed, log, PRICE_FALLBACK } from '../lib/mira.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -31,22 +31,18 @@ export default async function handler(req, res) {
 
   const deadline = Date.now() + 55000; // общий бюджет времени на все попытки
   for (const name of order) {
-    for (const model of modelsFor(name)) {
-      const left = deadline - Date.now();
-      if (left < 3000) break;
-      const started = Date.now();
-      try {
-        const out = await askProvider(name, chat, model, Math.min(25000, left));
-        const reply = sanitizeReply(out.reply);
-        const priceBlocked = reply === PRICE_FALLBACK && out.reply !== PRICE_FALLBACK;
-        const wantsLead = out.leadReady === true && !priceBlocked;
-        const summary = typeof out.summary === 'string' ? out.summary.trim().slice(0, 4000) : '';
-        const leadReady = wantsLead && leadAllowed(summary, messages.filter((m) => m.role === 'user').map((m) => m.content));
-        log({ provider: name, model, ms: Date.now() - started, leadReady, priceBlocked });
-        return res.status(200).json({ reply, leadReady, summary: leadReady ? summary : '', demo: false });
-      } catch (error) {
-        log({ provider: name, model, ms: Date.now() - started, error: String(error.message || error).slice(0, 80) });
-      }
+    if (deadline - Date.now() < 3000) break;
+    try {
+      const { out, model, ms } = await askModels(name, chat, modelsFor(name), { deadline });
+      const reply = sanitizeReply(out.reply);
+      const priceBlocked = reply === PRICE_FALLBACK && out.reply !== PRICE_FALLBACK;
+      const wantsLead = out.leadReady === true && !priceBlocked;
+      const summary = typeof out.summary === 'string' ? out.summary.trim().slice(0, 4000) : '';
+      const leadReady = wantsLead && leadAllowed(summary, messages.filter((m) => m.role === 'user').map((m) => m.content));
+      log({ provider: name, model, ms, leadReady, priceBlocked });
+      return res.status(200).json({ reply, leadReady, summary: leadReady ? summary : '', demo: false });
+    } catch (error) {
+      log({ provider: name, error: 'all models failed' });
     }
   }
   return res.status(502).json({ error: 'Не удалось получить ответ Mira. Попробуйте ещё раз.' });
