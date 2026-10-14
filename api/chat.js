@@ -1,5 +1,5 @@
 // Чат Mira: обработчик запроса. Вся логика лежит в lib/mira.js.
-import { loadKnowledge, providerOrder, modelsFor, limited, askModels, sanitizeReply, leadAllowed, log, PRICE_FALLBACK } from '../lib/mira.js';
+import { loadKnowledge, providerOrder, modelsFor, limited, askChain, fallbackSummary, sanitizeReply, leadAllowed, log, PRICE_FALLBACK } from '../lib/mira.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -30,20 +30,22 @@ export default async function handler(req, res) {
   const chat = [{ role: 'system', content: knowledge.prompt }, ...messages.map((m) => ({ role: m.role, content: m.content }))];
 
   const deadline = Date.now() + 55000; // общий бюджет времени на все попытки
-  for (const name of order) {
-    if (deadline - Date.now() < 3000) break;
-    try {
-      const { out, model, ms } = await askModels(name, chat, modelsFor(name), { deadline });
-      const reply = sanitizeReply(out.reply);
-      const priceBlocked = reply === PRICE_FALLBACK && out.reply !== PRICE_FALLBACK;
-      const wantsLead = out.leadReady === true && !priceBlocked;
-      const summary = typeof out.summary === 'string' ? out.summary.trim().slice(0, 4000) : '';
-      const leadReady = wantsLead && leadAllowed(summary, messages.filter((m) => m.role === 'user').map((m) => m.content));
-      log({ provider: name, model, ms, leadReady, priceBlocked });
-      return res.status(200).json({ reply, leadReady, summary: leadReady ? summary : '', demo: false });
-    } catch (error) {
-      log({ provider: name, error: 'all models failed' });
-    }
+  const entries = order.flatMap((name) => modelsFor(name).map((model) => ({ name, model })));
+  try {
+    const { out, name, model, ms } = await askChain(entries, chat, { deadline });
+    const reply = sanitizeReply(out.reply);
+    const priceBlocked = reply === PRICE_FALLBACK && out.reply !== PRICE_FALLBACK;
+    const userTexts = messages.filter((m) => m.role === 'user').map((m) => m.content);
+    // Если Mira просит нажать кнопку, кнопка должна быть, даже когда модель не вернула JSON или забыла summary.
+    const mentionsButton = /Отправить в Compile Point/i.test(reply);
+    const wantsLead = (out.leadReady === true || mentionsButton) && !priceBlocked;
+    let summary = typeof out.summary === 'string' ? out.summary.trim().slice(0, 4000) : '';
+    if (wantsLead && !summary) summary = fallbackSummary(userTexts);
+    const leadReady = wantsLead && leadAllowed(summary, userTexts);
+    log({ provider: name, model, ms, leadReady, priceBlocked, plain: out.plain === true });
+    return res.status(200).json({ reply, leadReady, summary: leadReady ? summary : '', demo: false });
+  } catch (error) {
+    log({ error: 'all models failed' });
   }
   return res.status(502).json({ error: 'Не удалось получить ответ Mira. Попробуйте ещё раз.' });
 }

@@ -59,7 +59,7 @@ test('GET: состояние без секретов', async () => {
 });
 
 test('если первый провайдер упал, отвечает второй', async () => {
-  env({ GROQ_API_KEY: 'g', NVIDIA_API_KEY: 'n' });
+  env({ GROQ_API_KEY: 'g', NVIDIA_API_KEY: 'n', GROQ_MODEL: 'one', NVIDIA_MODEL: 'two' });
   const urls = [];
   globalThis.fetch = async (url) => { urls.push(url); return url.includes('groq') ? { ok: false, status: 503 } : ai({ reply: 'Здравствуйте! Я Mira.', leadReady: false, summary: '' }); };
   const r = await call('POST', msg('привет'), '2.2.2.2');
@@ -160,4 +160,18 @@ test('если все модели упали, askModels отклоняется 
   env({ GROQ_API_KEY: 'g' });
   globalThis.fetch = async () => ({ ok: false, status: 429, text: async () => 'rate limit' });
   await assert.rejects(askModels('groq', [{ role: 'user', content: 'x' }], ['a', 'b'], { hedgeMs: 20 }), /HTTP 429/);
+});
+
+test('кнопка появляется, если модель предложила её, а JSON не вернула', async () => {
+  env({ GROQ_API_KEY: 'g', GROQ_MODEL: 'one' });
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: 'Нажмите кнопку «Отправить в Compile Point» под этим сообщением.' } }] }) });
+  const r = await call('POST', { messages: [{ role: 'user', content: 'Нужна Mira для массажа' }, { role: 'assistant', content: 'Как с вами связаться?' }, { role: 'user', content: '88009009090' }] }, '7.7.7.7');
+  assert.equal(r.json.leadReady, true); assert.match(r.json.summary, /88009009090/);
+});
+
+test('кнопка не появляется без контакта посетителя', async () => {
+  env({ GROQ_API_KEY: 'g', GROQ_MODEL: 'one' });
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: 'Нажмите кнопку «Отправить в Compile Point».' } }] }) });
+  const r = await call('POST', msg('привет'), '7.7.7.8');
+  assert.equal(r.json.leadReady, false);
 });
