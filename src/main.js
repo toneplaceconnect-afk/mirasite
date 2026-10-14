@@ -52,7 +52,7 @@ let loadAnimation = false;
 let lastLoadFrame = performance.now();
 function drawLoad() {
   const now = performance.now();
-  displayedLoad = Math.min(targetLoad, displayedLoad + (now - lastLoadFrame) * .06);
+  displayedLoad = Math.min(targetLoad, displayedLoad + (now - lastLoadFrame) * .2);
   lastLoadFrame = now;
   document.querySelector('#boot-count').textContent = String(Math.floor(displayedLoad)).padStart(2, '0');
   document.documentElement.style.setProperty('--load', String(displayedLoad / 100));
@@ -68,11 +68,13 @@ function finishBoot() {
   if (bootFinished || !miraLoaded || !pageLoaded) return;
   bootFinished = true; document.querySelector('#boot-count').textContent = '100'; document.documentElement.style.setProperty('--load', '1'); document.body.classList.add('mira-awake');
   const blocks = [...document.querySelectorAll('.intro-block')];
-  const stepDuration = reducedMotion.matches ? 1100 : 1500;
-  const initialDelay = reducedMotion.matches ? 0 : 700;
+  const stepDuration = reducedMotion.matches ? 1100 : 700;
+  const initialDelay = reducedMotion.matches ? 0 : 200;
+  const introRate = reducedMotion.matches ? 1 : 1.8;
   blocks.forEach((block, index) => setTimeout(() => {
     blocks.forEach(item => item.classList.remove('intro-focus'));
     block.classList.add('intro-visible', 'intro-focus');
+    void block.offsetWidth; block.getAnimations({ subtree: true }).forEach((animation) => { animation.playbackRate = introRate; });
     const rect = block.getBoundingClientRect(), bounds = frame.getBoundingClientRect();
     frame.contentWindow?.postMessage({ type: 'mira-gaze', x: Math.max(-1,Math.min(1,(rect.left+rect.width/2-(bounds.left+bounds.width/2))/(bounds.width*.65))), y: -1 }, location.protocol === 'file:' ? '*' : location.origin);
     if (index === blocks.length - 1) setTimeout(() => action('wink'), 1000);
@@ -84,7 +86,7 @@ function finishBoot() {
     action('hi');
     document.querySelector('#launch-button').disabled = false;
     document.querySelector('#boot-label').textContent = 'Нажмите «Пуск»';
-  }, initialDelay + blocks.length*stepDuration);
+  }, initialDelay + (blocks.length - 1)*stepDuration + (reducedMotion.matches ? 1100 : 1100));
 }
 document.querySelector('#launch-button').addEventListener('click', () => {
   if (!bootFinished) return;

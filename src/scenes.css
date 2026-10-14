@@ -106,3 +106,9 @@
 .s3-app .s3-stage{--bx:24deg;--by:24deg}
 .s3-site .s3-stage{--bx:10deg;--by:-20deg}
 .s3-app .s3-stage{--bx:30deg;--by:30deg}
+
+/* «В программе» повёрнута в ту же сторону, что и «На сайте»; грани столбцов справа */
+.s3-app .s3-stage{--bx:14deg;--by:-20deg}
+.s3-site .s3-stage{--bx:14deg;--by:-20deg}
+.s3-bar3:after{left:auto;right:0;transform-origin:right;transform:rotateY(-90deg);width:30px}
+.s3-bar3:before{height:30px}
