@@ -4,6 +4,8 @@ const toTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 toTop(); window.addEventListener('pageshow', toTop); window.addEventListener('load', toTop);
 const frame = document.querySelector('#mira-frame');
 if (!frame.src.includes('embed=1')) frame.src = './Mira.html?embed=1';
+/* After the page switches to the one-screen stage (stage.js) a second robot frame takes over; both receive actions, the visible one follows the pointer. */
+const liveFrame = () => { const s = document.querySelector('#stage-frame'); return s && s.dataset.live === '1' ? s : frame; };
 const wave = document.querySelector('.cursor-wave');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let pointerX = window.innerWidth / 2;
@@ -21,8 +23,8 @@ function animateWave() {
 function followPointer(event) {
   if (event.pointerType === 'touch') return;
   pointerX = event.clientX; pointerY = event.clientY;
-  const bounds = frame.getBoundingClientRect();
-  if (document.body.classList.contains('intro-complete')) frame.contentWindow?.postMessage({ type: 'mira-pointer', x: pointerX - bounds.left, y: pointerY - bounds.top }, location.protocol === 'file:' ? '*' : location.origin);
+  const live = liveFrame(), bounds = live.getBoundingClientRect(), k = live.offsetWidth ? bounds.width / live.offsetWidth : 1;
+  if (document.body.classList.contains('intro-complete')) live.contentWindow?.postMessage({ type: 'mira-pointer', x: (pointerX - bounds.left) / k, y: (pointerY - bounds.top) / k }, location.protocol === 'file:' ? '*' : location.origin);
   if (!reducedMotion.matches) {
     wave.classList.add('active');
     if (!waveRunning) { waveRunning = true; requestAnimationFrame(animateWave); }
@@ -40,7 +42,7 @@ let busy = false;
 let greeted = false;
 let pendingSummary = '';
 let greetingTimer;
-const action = (name) => frame.contentWindow?.postMessage({ type: 'mira-action', action: name }, location.protocol === 'file:' ? '*' : location.origin);
+const action = (name) => [frame, document.querySelector('#stage-frame')].forEach((f) => f?.contentWindow?.postMessage({ type: 'mira-action', action: name }, location.protocol === 'file:' ? '*' : location.origin));
 const setState = (text) => { state.replaceChildren(); const dot = document.createElement('i'); dot.className = 'dot'; state.append(dot, document.createTextNode(text)); };
 let bootFinished = false;
 let miraLoaded = false;

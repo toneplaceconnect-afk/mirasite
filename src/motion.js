@@ -57,6 +57,7 @@
   features.forEach((feature,i) => { feature.style.setProperty('--feature-delay',`${i*110}ms`); feature.addEventListener('pointermove',e=>{ if(reduced)return; const r=feature.getBoundingClientRect(); feature.style.setProperty('--rx',`${-(e.clientY-r.top-r.height/2)/40}deg`);feature.style.setProperty('--ry',`${(e.clientX-r.left-r.width/2)/40}deg`); });feature.addEventListener('pointerleave',()=>{feature.style.setProperty('--rx','0deg');feature.style.setProperty('--ry','0deg');}); });
   function update() {
     scheduled=false;
+    if(document.documentElement.classList.contains('stage'))return;
     const fr=document.querySelector('#flow').getBoundingClientRect(), ir=document.querySelector('#connect').getBoundingClientRect();
     const gr=featureGrid.getBoundingClientRect(), ar=document.querySelector('#about').getBoundingClientRect();
     // Robot route, in page order: hero -> perch above card 01 -> 02 -> 03 (block 02) -> flow (block 03) -> integration (block 04).

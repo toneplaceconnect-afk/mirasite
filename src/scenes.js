@@ -4,7 +4,7 @@
   if (!scenes.length) return;
   scenes.forEach((s) => s.classList.add('s3-js'));
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const io = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('on', e.isIntersecting)), { threshold: 0.15 });
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (!document.documentElement.classList.contains('stage')) e.target.classList.toggle('on', e.isIntersecting); }), { threshold: 0.15 });
   scenes.forEach((s) => io.observe(s));
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   scenes.forEach((s) => {
