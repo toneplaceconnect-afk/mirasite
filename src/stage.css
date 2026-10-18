@@ -1,8 +1,12 @@
 /* ===== One-screen stage (see stage.js). Everything here is scoped to html.stage, so without JS the old page stays as it was. ===== */
-html.stage{scroll-behavior:auto!important;scrollbar-width:none;overscroll-behavior-y:none;--pad:14px;--gut:68px}
-html.stage::-webkit-scrollbar{display:none}
-.stage-track{position:relative}
-html.stage main{position:sticky;top:0;height:100vh;height:100svh;padding:0;gap:0;display:block;flex:none;overflow:hidden;perspective:1700px;perspective-origin:50% 38%;z-index:1}
+html.stage{scroll-behavior:auto!important;--pad:14px;--gut:68px}
+html.stage,html.stage body{height:100%;overflow:hidden;overscroll-behavior:none}
+.stage-track{position:static}
+html.stage main{position:fixed;inset:0;height:auto;padding:0;gap:0;display:block;flex:none;overflow:hidden;perspective:1700px;perspective-origin:50% 38%;z-index:1;touch-action:none;-webkit-user-select:none;user-select:none}
+html.stage main .chat-panel,html.stage main .chat-panel *{-webkit-user-select:text;user-select:text}
+html.stage .chat-messages,html.stage #chat-input{touch-action:pan-y}
+html.stage main.moving>.block{will-change:transform,opacity}
+html.stage main>.block.is-off .block-fog i{animation-play-state:paused}
 html.stage main>.block{position:absolute;inset:var(--pad);margin:0;border-radius:30px;overflow:hidden;animation:none!important;transform-origin:50% 50%;backface-visibility:hidden}
 html.stage main>.block.block-hero,html.stage main>.block.block-final{overflow:hidden}
 html.stage .fiber,html.stage .integration-dock{display:none!important}
@@ -106,7 +110,15 @@ html.stage .block-final footer{flex:none;padding-right:var(--gut)}
 .stage-hint .h-in{fill:#fff}
 .stage-hint .h-line{fill:none;stroke:#2e5b6a;stroke-width:2;stroke-linecap:round;opacity:.45}
 .stage-hint .touch{position:absolute;left:21.5px;top:5px;width:16px;height:16px;margin:-8px;border-radius:50%;border:2px solid #19b8d6;animation:touch-ring 2.3s ease-out infinite}
-.stage-hint .hint-text{font-size:15px;font-weight:700;color:#2e5b6a;padding:8px 18px;border-radius:22px;background:#fffffff2;box-shadow:0 8px 20px #306f8224}
+.stage-hint .chev{display:flex;flex-direction:column;align-items:center;gap:0;height:30px;margin-bottom:-6px}
+.stage-hint .chev i{display:block;width:16px;height:16px;border-top:3px solid #19b8d6;border-left:3px solid #19b8d6;transform:rotate(45deg) scale(.7);margin-top:-8px;opacity:0;animation:chev 1.6s ease-in-out infinite}
+.stage-hint .chev i:nth-child(2){animation-delay:.2s}.stage-hint .chev i:nth-child(3){animation-delay:.4s}
+.stage-hint.desk .hand{animation-name:hand-down}
+.stage-hint.desk .chev i{transform:rotate(225deg) scale(.7);animation-name:chev-d}
+@keyframes hand-down{0%{transform:translateY(-30px);opacity:0}14%{opacity:1}72%{transform:translateY(26px);opacity:1}100%{transform:translateY(34px);opacity:0}}
+@keyframes chev-d{0%{opacity:0;translate:0 -10px}40%{opacity:1}100%{opacity:0;translate:0 10px}}
+@keyframes chev{0%{opacity:0;translate:0 10px}40%{opacity:1}100%{opacity:0;translate:0 -10px}}
+.stage-hint .hint-text{font-size:16px;font-weight:700;color:#2e5b6a;padding:8px 18px;border-radius:22px;background:#fffffff2;box-shadow:0 8px 20px #306f8224}
 @keyframes hand-swipe{0%{transform:translateY(34px);opacity:0}14%{opacity:1}72%{transform:translateY(-30px);opacity:1}100%{transform:translateY(-38px);opacity:0}}
 @keyframes touch-ring{0%,10%{transform:scale(.4);opacity:0}22%{opacity:.9}60%{transform:scale(1.9);opacity:0}100%{opacity:0}}
 body.chat-open .stage-rail,body.chat-open .stage-hint,body.chat-open .stage-robot{opacity:0!important;pointer-events:none}
@@ -128,8 +140,10 @@ body.chat-open .stage-rail,body.chat-open .stage-hint,body.chat-open .stage-robo
   html.stage main>.block{border-radius:24px}
   html.stage .stage-rail{padding:9px 4px 6px;gap:6px;right:3px}
   .stage-rail .dot{width:7px;height:7px}.stage-rail .dot.lead{width:9px;height:9px}
-  .stage-next{width:30px;height:30px}
-  .stage-hint{bottom:clamp(20px,4vh,40px)}
+  .stage-next{width:36px;height:36px}
+  .stage-hint{bottom:calc(env(safe-area-inset-bottom) + clamp(14px,3vh,30px))}
+  .stage-hint .hand{transform-origin:50% 100%;scale:1.25}
+  .stage-hint .hint-text{font-size:17px;padding:9px 20px}
 
   /* hero */
   html.stage .block-hero .header{height:56px;padding:0 var(--gut) 0 18px}
