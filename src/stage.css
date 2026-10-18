@@ -113,7 +113,13 @@ html.stage .block-final footer{flex:none;padding-right:var(--gut)}
 .stage-hint .chev{display:flex;flex-direction:column;align-items:center;gap:0;height:30px;margin-bottom:-6px}
 .stage-hint .chev i{display:block;width:16px;height:16px;border-top:3px solid #19b8d6;border-left:3px solid #19b8d6;transform:rotate(45deg) scale(.7);margin-top:-8px;opacity:0;animation:chev 1.6s ease-in-out infinite}
 .stage-hint .chev i:nth-child(2){animation-delay:.2s}.stage-hint .chev i:nth-child(3){animation-delay:.4s}
-.stage-hint.desk .hand{animation-name:hand-down}
+.stage-hint .mouse{display:none;position:relative;width:32px;height:50px;border:3px solid #2e5b6a;border-radius:17px;background:#fff;box-shadow:0 8px 16px #1f5a6c2e}
+.stage-hint .mouse i{position:absolute;left:50%;top:8px;width:5px;height:11px;margin-left:-2.5px;border-radius:3px;background:#19b8d6;animation:wheel-dot 1.7s cubic-bezier(.5,0,.3,1) infinite}
+@keyframes wheel-dot{0%{translate:0 -3px;opacity:0}20%{opacity:1}70%{translate:0 13px;opacity:1}100%{translate:0 17px;opacity:0}}
+.stage-hint.desk .hand{display:none}
+.stage-hint.desk .mouse{display:block;order:1}
+.stage-hint.desk .chev{order:2;margin:2px 0 0;height:28px}
+.stage-hint.desk .hint-text{order:3}
 .stage-hint.desk .chev i{transform:rotate(225deg) scale(.7);animation-name:chev-d}
 @keyframes hand-down{0%{transform:translateY(-30px);opacity:0}14%{opacity:1}72%{transform:translateY(26px);opacity:1}100%{transform:translateY(34px);opacity:0}}
 @keyframes chev-d{0%{opacity:0;translate:0 -10px}40%{opacity:1}100%{opacity:0;translate:0 10px}}
@@ -240,6 +246,6 @@ body.chat-open .stage-rail,body.chat-open .stage-hint,body.chat-open .stage-robo
   html.stage .hero-copy .eyebrow{display:none}
 }
 @media(prefers-reduced-motion:reduce){
-  .stage-hint .hand,.stage-next svg,.stage-hint .touch{animation:none!important}
+  .stage-hint .hand,.stage-next svg,.stage-hint .touch,.stage-hint .mouse i{animation:none!important}
   .st-bub,.st-card{transition:none}
 }

@@ -82,7 +82,7 @@
 
     /* scroll hint: a hand that swipes */
     const hint = document.createElement('div'); hint.className = 'stage-hint'; hint.setAttribute('aria-hidden', 'true');
-    hint.innerHTML = '<span class="chev"><i></i><i></i><i></i></span><span class="hand"><svg viewBox="0 0 48 64" width="46" height="62"><defs><g id="mira-hand"><rect x="17" y="3" width="10" height="38" rx="5"/><rect x="11" y="31" width="31" height="28" rx="13"/><rect x="4" y="37" width="14" height="10" rx="5" transform="rotate(28 11 42)"/></g></defs><use href="#mira-hand" class="h-out"/><use href="#mira-hand" class="h-in"/><path class="h-line" d="M22 44h13M22 50h12"/></svg><i class="touch"></i></span><span class="hint-text"></span>';
+    hint.innerHTML = '<span class="chev"><i></i><i></i><i></i></span><span class="mouse"><i></i></span><span class="hand"><svg viewBox="0 0 48 64" width="46" height="62"><defs><g id="mira-hand"><rect x="17" y="3" width="10" height="38" rx="5"/><rect x="11" y="31" width="31" height="28" rx="13"/><rect x="4" y="37" width="14" height="10" rx="5" transform="rotate(28 11 42)"/></g></defs><use href="#mira-hand" class="h-out"/><use href="#mira-hand" class="h-in"/><path class="h-line" d="M22 44h13M22 50h12"/></svg><i class="touch"></i></span><span class="hint-text"></span>';
     document.body.append(hint);
     const hintText = q('.hint-text', hint);
     const setHintText = () => { hintText.textContent = isMobile() ? 'Проведите вверх' : 'Листайте вниз'; hint.classList.toggle('desk', !isMobile()); };
