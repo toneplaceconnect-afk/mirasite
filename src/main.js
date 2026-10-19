@@ -55,14 +55,22 @@ const browserSpeak = (text) => { soundCfg(); chunkText(text).forEach((part, i) =
 const sendMouth = (msg) => toFrames(msg, true);
 const miraSpeak = (text) => {
   if (reducedMotion.matches) return;
-  if (voiceOn && window.miraVoice && !window.miraVoice.down()) { window.miraVoice.speak(text, sendMouth).then((ok) => { if (!ok && voiceOn) browserSpeak(text); }); return; }
+  if (voiceOn && window.miraVoice && window.miraVoice.state() === 'ready') { window.miraVoice.speak(text, sendMouth).then((ok) => { if (!ok && voiceOn) browserSpeak(text); }); return; }
   browserSpeak(text);
+};
+const voiceLabel = voiceBtn?.querySelector('span');
+const onVoiceState = ({ state, pct }) => {
+  if (!voiceBtn || !voiceLabel) return;
+  if (state === 'loading') { voiceLabel.textContent = pct ? `Загрузка ${pct}%` : 'Загрузка…'; voiceBtn.classList.add('loading'); return; }
+  voiceBtn.classList.remove('loading'); voiceLabel.textContent = 'Голос';
+  if (state === 'ready' && voiceOn) miraSpeak('Голос включён. Я вас слушаю.');
+  if (state === 'error' && voiceOn) browserSpeak('Голос включён. Я вас слушаю.');
 };
 function unlockSpeech() { try { if ('speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (_) {} }
 voiceBtn?.addEventListener('click', () => {
   voiceOn = !voiceOn;
   applyVoiceUi(); soundCfg();
-  if (voiceOn) { unlockSpeech(); window.miraVoice?.unlock(); miraSpeak('Голос включён. Я вас слушаю.'); }
+  if (voiceOn) { unlockSpeech(); window.miraVoice?.unlock(); if (window.miraVoice?.state() === 'ready') miraSpeak('Голос включён. Я вас слушаю.'); else window.miraVoice?.prepare(onVoiceState); }
   else miraStopSpeak();
 });
 applyVoiceUi();
