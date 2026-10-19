@@ -50,6 +50,9 @@
     },
     "api/lead.js": {
       "maxDuration": 15
+    },
+    "api/tts.js": {
+      "maxDuration": 30
     }
   }
 }

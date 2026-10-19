@@ -51,16 +51,22 @@ const applyVoiceUi = () => { if (!voiceBtn) return; voiceBtn.setAttribute('aria-
 const soundCfg = () => toFrames({ type: 'mira-sound', on: voiceOn, rate: 0.88, pitch: 1.2 });
 /* длинный ответ режем на фразы: браузеры обрывают долгую озвучку, а между фразами получаются естественные паузы */
 const chunkText = (text) => { const parts = text.replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*\s*/g) || [text]; const out = []; let cur = ''; parts.forEach((p) => { if ((cur + p).length > 150 && cur) { out.push(cur.trim()); cur = p; } else cur += p; }); if (cur.trim()) out.push(cur.trim()); return out; };
-const miraSpeak = (text) => { if (reducedMotion.matches) return; soundCfg(); chunkText(text).forEach((part, i) => toFrames({ type: 'mira-speak', text: part, rate: 1, queue: i > 0 }, true)); };
+const browserSpeak = (text) => { soundCfg(); chunkText(text).forEach((part, i) => toFrames({ type: 'mira-speak', text: part, rate: 1, queue: i > 0 }, true)); };
+const sendMouth = (msg) => toFrames(msg, true);
+const miraSpeak = (text) => {
+  if (reducedMotion.matches) return;
+  if (voiceOn && window.miraVoice && !window.miraVoice.down()) { window.miraVoice.speak(text, sendMouth).then((ok) => { if (!ok && voiceOn) browserSpeak(text); }); return; }
+  browserSpeak(text);
+};
 function unlockSpeech() { try { if ('speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (_) {} }
 voiceBtn?.addEventListener('click', () => {
   voiceOn = !voiceOn;
   applyVoiceUi(); soundCfg();
-  if (voiceOn) { unlockSpeech(); toFrames({ type: 'mira-speak', text: '[радость] Голос включён. Я вас слушаю.', rate: 1 }, true); }
+  if (voiceOn) { unlockSpeech(); window.miraVoice?.unlock(); miraSpeak('Голос включён. Я вас слушаю.'); }
   else miraStopSpeak();
 });
 applyVoiceUi();
-const miraStopSpeak = () => toFrames({ type: 'mira-speak-stop' });
+const miraStopSpeak = () => { window.miraVoice?.stop(); toFrames({ type: 'mira-speak-stop' }); };
 const action = (name) => [frame, document.querySelector('#stage-frame')].forEach((f) => f?.contentWindow?.postMessage({ type: 'mira-action', action: name }, location.protocol === 'file:' ? '*' : location.origin));
 const setState = (text) => { state.replaceChildren(); const dot = document.createElement('i'); dot.className = 'dot'; state.append(dot, document.createTextNode(text)); };
 let bootFinished = false;
