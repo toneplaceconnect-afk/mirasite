@@ -151,6 +151,7 @@
       return finalDock;
     }
     function measureBase() {
+      if (isMobile()) { R.bw = 400; R.bh = 600; bot.style.width = '400px'; bot.style.height = '600px'; return; }
       const r = layoutRect(heroDock);
       if (r && r.width > 40 && r.height > 40 && (Math.abs(r.width - R.bw) > 1 || Math.abs(r.height - R.bh) > 1)) {
         R.bw = r.width; R.bh = r.height; bot.style.width = R.bw + 'px'; bot.style.height = R.bh + 'px';
@@ -159,8 +160,8 @@
     function targetOf(step) {
       const d = dockFor(step); if (!d) return null;
       const r = layoutRect(d); if (!r || r.height < 20) return null;
-      const s = r.height / R.bh;
-      return { x: r.left + r.width / 2 - R.bw * s / 2, y: r.top, s };
+      const s = Math.min(r.height / R.bh, r.width / R.bw);
+      return { x: r.left + r.width / 2 - R.bw * s / 2, y: r.top + (r.height - R.bh * s) / 2, s };
     }
     function goLive() {
       if (R.live) return;
@@ -174,7 +175,7 @@
     function robotStep(now) {
       if (!R.live) return false;
       const t = targetOf(cur); if (!t) return false;
-      const dt = Math.min(.05, (now - R.last) / 1000 || .016); R.last = now;
+      const dt = Math.min(.3, (now - R.last) / 1000 || .016); R.last = now;
       const k = reduced ? 1 : 1 - Math.exp(-dt * 6.5);
       const dx = t.x - R.x, dy = t.y - R.y;
       const dist = Math.hypot(dx, dy) + Math.abs(t.s - R.s) * R.bh * .5;
@@ -336,6 +337,7 @@
     /* ---------- go ---------- */
     scrollTo({ top: 0, left: 0, behavior: 'instant' });
     measureBase(); render(); commit(0); lastShownStep = 0;
+    if (isMobile()) goLive();
     setTimeout(() => { measureBase(); schedule(); }, 1500);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measureBase(); schedule(); });
     setTimeout(() => { if (!userMoved && !chatOpen) showHint(0); }, 1300);
