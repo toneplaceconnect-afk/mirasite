@@ -103,3 +103,12 @@ h2{font-size:clamp(30px,3.6vw,52px)}
 .send-env{fill:#7ae2ed}.send-env .flap{fill:none;stroke:#20343e;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .s3-dest .mw{--wing:#ffffffeb}.s3-dest .mw-body{width:30px;height:30px;--flap:#1796b7}.s3-dest .mw-wing{top:-8px}
 @media(prefers-reduced-motion:reduce){.mw-wing{animation:none}}
+
+.chat-header{position:relative}
+.voice-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:1px solid #cfe6ec;border-radius:999px;background:#fff;color:#2e5b6a;font:700 13px Nunito,Arial,sans-serif;cursor:pointer;flex:none}
+.voice-toggle svg{fill:#2e5b6a;stroke:#2e5b6a}
+.voice-toggle .vt-on{display:none}.voice-toggle .vt-off{display:block}
+.voice-toggle[aria-pressed="true"]{background:linear-gradient(135deg,#3fd6ee,#16a9cc);border-color:transparent;color:#04323d}
+.voice-toggle[aria-pressed="true"] svg{fill:#04323d;stroke:#04323d}
+.voice-toggle[aria-pressed="true"] .vt-on{display:block}.voice-toggle[aria-pressed="true"] .vt-off{display:none}
+.voice-toggle:focus-visible{outline:3px solid #19b8d680;outline-offset:2px}

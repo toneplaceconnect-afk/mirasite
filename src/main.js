@@ -45,7 +45,19 @@ let greetingTimer;
 /* речь и мимика: рот двигается по тексту ответа, звука пока нет (голос подключим отдельно) */
 const origin = () => (location.protocol === 'file:' ? '*' : location.origin);
 const toFrames = (msg, onlyLive) => (onlyLive ? [liveFrame()] : [frame, document.querySelector('#stage-frame')]).forEach((f) => f?.contentWindow?.postMessage(msg, origin()));
-const miraSpeak = (text) => { if (reducedMotion.matches) return; toFrames({ type: 'mira-sound', on: false }, true); toFrames({ type: 'mira-speak', text, rate: 1.15 }, true); };
+let voiceOn = false; /* браузеры разрешают звук только после касания, поэтому при каждой загрузке голос выключен */
+const voiceBtn = document.querySelector('#voice-toggle');
+const applyVoiceUi = () => { if (!voiceBtn) return; voiceBtn.setAttribute('aria-pressed', String(voiceOn)); const t = voiceOn ? 'Выключить голос Mira' : 'Включить голос Mira'; voiceBtn.setAttribute('aria-label', t); voiceBtn.title = t; };
+const soundCfg = () => toFrames({ type: 'mira-sound', on: voiceOn, rate: 1.02, pitch: 1.3 });
+const miraSpeak = (text) => { if (reducedMotion.matches) return; soundCfg(); toFrames({ type: 'mira-speak', text, rate: 1.15 }, true); };
+function unlockSpeech() { try { if ('speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (_) {} }
+voiceBtn?.addEventListener('click', () => {
+  voiceOn = !voiceOn;
+  applyVoiceUi(); soundCfg();
+  if (voiceOn) { unlockSpeech(); toFrames({ type: 'mira-speak', text: '[радость] Голос включён. Я вас слушаю.', rate: 1 }, true); }
+  else miraStopSpeak();
+});
+applyVoiceUi();
 const miraStopSpeak = () => toFrames({ type: 'mira-speak-stop' });
 const action = (name) => [frame, document.querySelector('#stage-frame')].forEach((f) => f?.contentWindow?.postMessage({ type: 'mira-action', action: name }, location.protocol === 'file:' ? '*' : location.origin));
 const setState = (text) => { state.replaceChildren(); const dot = document.createElement('i'); dot.className = 'dot'; state.append(dot, document.createTextNode(text)); };
