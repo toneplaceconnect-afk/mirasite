@@ -42,6 +42,11 @@ let busy = false;
 let greeted = false;
 let pendingSummary = '';
 let greetingTimer;
+/* речь и мимика: рот двигается по тексту ответа, звука пока нет (голос подключим отдельно) */
+const origin = () => (location.protocol === 'file:' ? '*' : location.origin);
+const toFrames = (msg, onlyLive) => (onlyLive ? [liveFrame()] : [frame, document.querySelector('#stage-frame')]).forEach((f) => f?.contentWindow?.postMessage(msg, origin()));
+const miraSpeak = (text) => { if (reducedMotion.matches) return; toFrames({ type: 'mira-sound', on: false }, true); toFrames({ type: 'mira-speak', text, rate: 1.15 }, true); };
+const miraStopSpeak = () => toFrames({ type: 'mira-speak-stop' });
 const action = (name) => [frame, document.querySelector('#stage-frame')].forEach((f) => f?.contentWindow?.postMessage({ type: 'mira-action', action: name }, location.protocol === 'file:' ? '*' : location.origin));
 const setState = (text) => { state.replaceChildren(); const dot = document.createElement('i'); dot.className = 'dot'; state.append(dot, document.createTextNode(text)); };
 let bootFinished = false;
@@ -118,7 +123,7 @@ async function talk(text) {
   document.querySelectorAll('[data-prompt]').forEach((button) => { button.disabled = true; });
   input.value = ''; status.textContent = ''; pendingSummary = '';
   document.querySelectorAll('.lead-button').forEach((button) => button.remove());
-  addMessage('user', text);
+  addMessage('user', text); miraStopSpeak();
   setState('Думаю над вашим вопросом');
   if (!greeted) { greeted = true; action('hi'); greetingTimer = setTimeout(() => action('think-start'), 1000); } else action('think-start');
   try {
@@ -134,7 +139,7 @@ async function talk(text) {
     if (typeof data.reply !== 'string' || !data.reply.trim()) throw new Error('Ответ не получен. Попробуйте ещё раз.');
     history.push({ role: 'user', content: text }, { role: 'assistant', content: data.reply });
     const element = addMessage('assistant', data.reply);
-    clearTimeout(greetingTimer); action('think-stop'); action('tails');
+    clearTimeout(greetingTimer); action('think-stop'); action('tails'); miraSpeak(data.reply);
     setState('Готова продолжить разговор');
     if (data.demo) status.textContent = 'Демонстрационный режим: подключите ключ ИИ в Vercel для свободного общения. Обращения пока не отправляются.';
     if (data.leadReady && !data.demo && typeof data.summary === 'string') {
