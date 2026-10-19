@@ -48,8 +48,10 @@ const toFrames = (msg, onlyLive) => (onlyLive ? [liveFrame()] : [frame, document
 let voiceOn = false; /* браузеры разрешают звук только после касания, поэтому при каждой загрузке голос выключен */
 const voiceBtn = document.querySelector('#voice-toggle');
 const applyVoiceUi = () => { if (!voiceBtn) return; voiceBtn.setAttribute('aria-pressed', String(voiceOn)); const t = voiceOn ? 'Выключить голос Mira' : 'Включить голос Mira'; voiceBtn.setAttribute('aria-label', t); voiceBtn.title = t; };
-const soundCfg = () => toFrames({ type: 'mira-sound', on: voiceOn, rate: 1.02, pitch: 1.3 });
-const miraSpeak = (text) => { if (reducedMotion.matches) return; soundCfg(); toFrames({ type: 'mira-speak', text, rate: 1.15 }, true); };
+const soundCfg = () => toFrames({ type: 'mira-sound', on: voiceOn, rate: 0.88, pitch: 1.2 });
+/* длинный ответ режем на фразы: браузеры обрывают долгую озвучку, а между фразами получаются естественные паузы */
+const chunkText = (text) => { const parts = text.replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*\s*/g) || [text]; const out = []; let cur = ''; parts.forEach((p) => { if ((cur + p).length > 150 && cur) { out.push(cur.trim()); cur = p; } else cur += p; }); if (cur.trim()) out.push(cur.trim()); return out; };
+const miraSpeak = (text) => { if (reducedMotion.matches) return; soundCfg(); chunkText(text).forEach((part, i) => toFrames({ type: 'mira-speak', text: part, rate: 1, queue: i > 0 }, true)); };
 function unlockSpeech() { try { if ('speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (_) {} }
 voiceBtn?.addEventListener('click', () => {
   voiceOn = !voiceOn;

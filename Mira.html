@@ -173,8 +173,8 @@ function itemAtChar(tl,c){var lo=0,hi=tl.length-1,r=-1;while(lo<=hi){var m=(lo+h
 function startTTS(it,tok){
  try{
   cancelTTS();var u=new SpeechSynthesisUtterance(it.text);u.voice=SND.voice;u.lang=SND.voice.lang||'ru-RU';
-  u.rate=Math.min(1.6,Math.max(.6,SND.rate*(it.rate||1)));u.pitch=SND.pitch;
-  SP.mode='tts';SP.pace=SND.pace;SP.ttsWait=true;SP.waitUntil=performance.now()+1500;SP.nb=0;
+  u.rate=Math.min(1.6,Math.max(.6,SND.rate));u.pitch=SND.pitch;
+  SP.mode='tts';SP.pace=SND.pace;SP.ttsWait=true;SP.waitUntil=performance.now()+5000;SP.nb=0;
   u.onstart=function(){if(tok!==SP.tok)return;SP.ttsWait=false;SP.t0=SP.ttsAt=performance.now()};
   u.onboundary=function(e){if(tok!==SP.tok||SP.mode!=='tts'||SP.ttsWait)return;
    var ix=itemAtChar(SP.tl,e.charIndex||0);if(ix<0)return;var now=performance.now(),ti=SP.tl[ix].t;
