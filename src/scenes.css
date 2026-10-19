@@ -84,8 +84,8 @@
 .s3-app .s3-stage{--bx:14deg;--by:17deg}
 .s3-appwin{position:absolute;left:50%;top:50%;width:min(326px,82cqw);height:186px;margin:-93px 0 0 calc(min(326px,82cqw) / -2);border-radius:14px;background:linear-gradient(160deg,#fff,#e9f6f9);border:1px solid #fff;box-shadow:0 24px 40px #2b7d9438;display:grid;grid-template-columns:44px 1fr;overflow:visible;transform-style:preserve-3d}
 .s3-side{background:#d9eef3;border-radius:14px 0 0 14px;padding:16px 12px;display:grid;gap:12px;align-content:start}.s3-side i{height:8px;border-radius:4px;background:#a7d6e2}.s3-side i:first-child{background:var(--c)}
-.s3-chart{position:relative;display:flex;gap:16px;align-items:flex-end;padding:0 24px 24px;transform-style:preserve-3d}
-.s3-bar3{position:relative;width:28px;height:var(--h);transform-style:preserve-3d;background:linear-gradient(180deg,#58dcef,#19b8d6);animation:s3-grow 8s ease-in-out infinite;animation-delay:calc(var(--i) * .12s)}
+.s3-chart{position:relative;display:flex;gap:clamp(6px,3cqw,16px);align-items:flex-end;padding:0 clamp(12px,5cqw,24px) 24px;min-width:0;transform-style:preserve-3d}
+.s3-bar3{position:relative;flex:1 1 0;min-width:0;max-width:28px;height:var(--h);transform-style:preserve-3d;background:linear-gradient(180deg,#58dcef,#19b8d6);animation:s3-grow 8s ease-in-out infinite;animation-delay:calc(var(--i) * .12s)}
 .s3-bar3:before{content:'';position:absolute;left:0;top:0;width:100%;height:26px;background:#c4f4fa;transform-origin:top;transform:rotateX(-90deg)}
 .s3-bar3:after{content:'';position:absolute;left:0;top:0;width:26px;height:100%;background:#0c86a4;transform-origin:left;transform:rotateY(90deg)}
 .s3-bar3.hot{animation:s3-grow 8s ease-in-out infinite,s3-hot 8s ease-in-out infinite;animation-delay:calc(var(--i) * .12s),0s}
@@ -110,5 +110,5 @@
 /* «В программе» повёрнута в ту же сторону, что и «На сайте»; грани столбцов справа */
 .s3-app .s3-stage{--bx:14deg;--by:-20deg}
 .s3-site .s3-stage{--bx:14deg;--by:-20deg}
-.s3-bar3:after{left:auto;right:0;transform-origin:right;transform:rotateY(-90deg);width:30px}
+.s3-bar3:after{left:auto;right:0;transform-origin:right;transform:rotateY(-90deg);width:min(30px,100%)}
 .s3-bar3:before{height:30px}
