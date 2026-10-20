@@ -53,8 +53,9 @@ const soundCfg = () => toFrames({ type: 'mira-sound', on: voiceOn, rate: 0.88, p
 const chunkText = (text) => { const parts = text.replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*\s*/g) || [text]; const out = []; let cur = ''; parts.forEach((p) => { if ((cur + p).length > 150 && cur) { out.push(cur.trim()); cur = p; } else cur += p; }); if (cur.trim()) out.push(cur.trim()); return out; };
 const browserSpeak = (text) => { soundCfg(); chunkText(text).forEach((part, i) => toFrames({ type: 'mira-speak', text: part, rate: 1, queue: i > 0 }, true)); };
 const sendMouth = (msg) => toFrames(msg, true);
+const VOICE_ENABLED = false; /* озвучка и движение рта по тексту пока отключены */
 const miraSpeak = (text) => {
-  if (reducedMotion.matches) return;
+  if (!VOICE_ENABLED || reducedMotion.matches) return;
   if (voiceOn && window.miraVoice && window.miraVoice.state() === 'ready') { window.miraVoice.speak(text, sendMouth).then((ok) => { if (!ok && voiceOn) browserSpeak(text); }); return; }
   browserSpeak(text);
 };

@@ -113,3 +113,5 @@ h2{font-size:clamp(30px,3.6vw,52px)}
 .voice-toggle[aria-pressed="true"] .vt-on{display:block}.voice-toggle[aria-pressed="true"] .vt-off{display:none}
 .voice-toggle:focus-visible{outline:3px solid #19b8d680;outline-offset:2px}
 .voice-toggle.loading{opacity:.9;min-width:132px;justify-content:center}
+
+.voice-toggle[hidden]{display:none!important}
