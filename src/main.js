@@ -51,9 +51,17 @@ const applyVoiceUi = () => { if (!voiceBtn) return; voiceBtn.setAttribute('aria-
 const soundCfg = () => toFrames({ type: 'mira-sound', on: voiceOn, rate: 0.88, pitch: 1.2 });
 /* длинный ответ режем на фразы: браузеры обрывают долгую озвучку, а между фразами получаются естественные паузы */
 const chunkText = (text) => { const parts = text.replace(/\s+/g, ' ').trim().match(/[^.!?…]+[.!?…]*\s*/g) || [text]; const out = []; let cur = ''; parts.forEach((p) => { if ((cur + p).length > 150 && cur) { out.push(cur.trim()); cur = p; } else cur += p; }); if (cur.trim()) out.push(cur.trim()); return out; };
-const browserSpeak = (text) => { soundCfg(); chunkText(text).forEach((part, i) => toFrames({ type: 'mira-speak', text: part, rate: 1, queue: i > 0 }, true)); };
+const moodFor = (t) => {
+  if (/к сожалению|не могу|не получится|извин|увы/i.test(t)) return 'sad';
+  if (/спасибо|отличн|здорово|рада|с удовольствием|поздравл/i.test(t)) return 'excited';
+  if (/привет|здравств|добр(ый|ое|ой)|готова|помогу|конечно|да, /i.test(t)) return 'happy';
+  if (/\?\s*$/.test(t.trim())) return 'listening';
+  return 'neutral';
+};
+const setMood = (mood, extra) => toFrames({ type: 'mira-mood', mood, ...extra }, true);
+const browserSpeak = (text) => { soundCfg(); chunkText(text).forEach((part, i) => toFrames({ type: 'mira-speak', text: i === 0 && moodFor(text) !== 'neutral' ? `[${moodFor(text)}] ${part}` : part, rate: 1, queue: i > 0 }, true)); };
 const sendMouth = (msg) => toFrames(msg, true);
-const VOICE_ENABLED = false; /* озвучка и движение рта по тексту пока отключены */
+const VOICE_ENABLED = true; /* рот и мимика по тексту работают без звука; кнопка «Голос» скрыта, звука нет */
 const miraSpeak = (text) => {
   if (!VOICE_ENABLED || reducedMotion.matches) return;
   if (voiceOn && window.miraVoice && window.miraVoice.state() === 'ready') { window.miraVoice.speak(text, sendMouth).then((ok) => { if (!ok && voiceOn) browserSpeak(text); }); return; }
@@ -152,9 +160,10 @@ async function talk(text) {
   document.querySelectorAll('[data-prompt]').forEach((button) => { button.disabled = true; });
   input.value = ''; status.textContent = ''; pendingSummary = '';
   document.querySelectorAll('.lead-button').forEach((button) => button.remove());
-  addMessage('user', text); miraStopSpeak();
+  addMessage('user', text); miraStopSpeak(); setMood('listening', { duration: 1800 });
   setState('Думаю над вашим вопросом');
   if (!greeted) { greeted = true; action('hi'); greetingTimer = setTimeout(() => action('think-start'), 1000); } else action('think-start');
+  setTimeout(() => { if (busy) setMood('thinking', { duration: 60000 }); }, 1900);
   try {
     const localPreview = location.protocol === 'file:';
     const response = localPreview ? await new Promise((resolve) => setTimeout(() => resolve({ ok: true, json: async () => {
@@ -168,7 +177,7 @@ async function talk(text) {
     if (typeof data.reply !== 'string' || !data.reply.trim()) throw new Error('Ответ не получен. Попробуйте ещё раз.');
     history.push({ role: 'user', content: text }, { role: 'assistant', content: data.reply });
     const element = addMessage('assistant', data.reply);
-    clearTimeout(greetingTimer); action('think-stop'); action('tails'); miraSpeak(data.reply);
+    clearTimeout(greetingTimer); action('think-stop'); action('tails'); setMood('neutral', { hold: true }); miraSpeak(data.reply);
     setState('Готова продолжить разговор');
     if (data.demo) status.textContent = 'Демонстрационный режим: подключите ключ ИИ в Vercel для свободного общения. Обращения пока не отправляются.';
     if (data.leadReady && !data.demo && typeof data.summary === 'string') {
@@ -176,7 +185,7 @@ async function talk(text) {
       const button = document.createElement('button'); button.className = 'lead-button'; button.textContent = 'Отправить в Compile Point'; button.addEventListener('click', () => sendLead(button)); element.append(button); messages.scrollTop = messages.scrollHeight;
     }
   } catch (error) {
-    addMessage('assistant', error.name === 'TimeoutError' ? 'Ответ занимает больше времени, чем обычно. Попробуйте отправить вопрос ещё раз.' : (error instanceof TypeError ? 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.' : error.message));
+    setMood('neutral', { hold: true }); addMessage('assistant', error.name === 'TimeoutError' ? 'Ответ занимает больше времени, чем обычно. Попробуйте отправить вопрос ещё раз.' : (error instanceof TypeError ? 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.' : error.message));
     setState('Можно повторить вопрос');
   } finally { clearTimeout(greetingTimer); action('think-stop'); busy = false; send.disabled = false; document.querySelectorAll('[data-prompt]').forEach((button) => { button.disabled = false; }); }
 }
